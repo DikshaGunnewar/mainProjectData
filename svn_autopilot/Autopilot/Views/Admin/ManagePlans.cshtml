@@ -1,0 +1,349 @@
+﻿
+@{
+    ViewBag.Title = "ManagePlans";
+}
+
+<h2>Manage Plans</h2><a class="pull-right "><i class="fa fa-plus fa-2x" ></i></a>
+<table id="ManagePlansTable" class="table table-responsive table-vertical-align-middle">
+    <thead>
+        <tr>
+            <th>
+                Sr. No.
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Billing Frequency
+            </th>
+            <th>
+                No. of Accounts
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody id="PlansList"></tbody>
+</table>
+<div class="modal fade" id="AddUpdatePlanModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h6 class="modal-title">Add new plan</h6>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="planIdToUpdate" />
+                @*<form id="AddUpdateSchedulePin">*@
+                    <input type="hidden" id="schedulePinId" />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Title*</label>
+                            <input class="form-control " type="text" id="plan-title" placeholder="Enter plan title ">
+                            @*<input size="16" type="text" placeholder="Set Schedule time" readonly class="form_datetime">*@
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Price*($)</label>
+
+                            <input class="form-control " type="text" id="plan-price" placeholder="Enter plan price " />
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Billing Frequency*</label>
+                            <select class="form-control" id="billing-frequency" onchange="CheckTrail()" style="width: 100%">
+                                <option value="0">Select billing frequency</option>
+                                <option value="Trail">Trail</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Yearly">Yearly</option>
+
+                            </select>
+                           <input class="form-control" type="text" style="display: none; margin-top: 10px" id="TrailDaysInput" placeholder="Trail Duration">
+                            @*<input size="16" type="text" placeholder="Set Schedule time" readonly class="form_datetime">*@
+                        </div>
+                        <div class="col-sm-6">
+                            <label>No of Account*($)</label>
+                            <input class="form-control " type="text" id="no-of-accounts" placeholder="No of account" />
+                        </div>
+
+                    </div>
+               
+                <div>
+                    <div class="col-sm-12">
+                        Features:-
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>Number of tags per service</p>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            Unlimited <input type="radio" name="noOfTag" onchange="checkTagLimit()" class="noOfTag" value="false" />
+                            Limited <input type="radio" name="noOfTag" onchange="checkTagLimit()" class="noOfTag" value="true" />
+                            <input class="form-control" type="text" style="display: none; margin-top: 10px" id="TagLimitInput" placeholder="Trail Duration">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>Speed of interaction</p>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            High <input type="radio" name="Speed" class="Speed" value="false" /> 
+                            Low <input type="radio" name="Speed" class="Speed" value="true" /> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>Located Keywords</p>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <input type="checkbox" id="location-checkbox"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>Negative Keywords</p>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <input type="checkbox" id="negative-key-checkbox" />
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>Super Targeting</p>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <input type="checkbox" id="supertarget-checkbox" />
+
+                        </div>
+                    </div>
+                </div>
+
+@*                </form>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-accent" id="AddPlanBtn">Save</button>
+                <button type="button" class="btn btn-accent" id="UpdatePlanBtn">Update</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        $(document).ready(function () {
+
+            LoadPlans();
+            function LoadPlans() {
+                $.ajax({
+                    type: "GET",
+                    url: '/Admin/GetAllPlan',
+                    success: function (response) {
+                        if (response.length > 0) {
+                            $('#PlansList').empty();
+                            $.each(response, function (key, value) {
+                                //var stillUtc = moment.utc(response.pinInfo.ScheduleDate).format('YYYY-MM-DD HH:mm:ss');
+
+                                //var scheduleDateTime = moment.utc(value.ScheduleDate).local().format("YYYY-MM-DD HH:mm A")
+                                var element = '<tr><td><div class="small"> ' + eval(key+1) + '</div></td>' +
+                                          '<td><div class="small">  ' + value.Title + '</div></td>' +
+                                          '<td><div class="small">  ' + value.Price + '</div></td>' +
+                                          '<td><div class="small "> ' + value.BillingFrequency + '</div></td>' +
+                                          '<td><div class="small "> ' + value.NoOfAccounts + '</div></td>' +
+                                        '<td><a class="removePlan"><i  id="' + value.Id + '" class="fa fa-trash-o"></i></a>   <a class="editSchedulePin" onclick="OpenUpdateScheduleModal(' + value.Id + ')"><i  id="' + value.Id + '" class="fa fa-pencil-square-o"></i></a></td></tr>';
+
+                                $('#PlansList').append(element);
+
+                            });
+                            dynamicBtnBind();
+                        }
+                        $('#ManagePlansTable').DataTable({
+                            "dom": "<'row'<'col-sm-6'l><'col-sm-6'f>>t<'row'<'col-sm-6'i><'col-sm-6'p>>"
+                        });
+                    }
+                });
+            }
+
+            $('.fa-plus').click(function () {
+                $('#AddPlanBtn').show();
+                $('#UpdatePlanBtn').hide();
+
+                $('#AddUpdatePlanModal').modal('show');
+            });
+          
+            function SubscriptionPlanDataObjCreate() {
+                var dataObject = {};
+                dataObject.Title = $('#plan-title').val();
+                dataObject.Price = $('#plan-price').val();
+                dataObject.BillingFrequency = $('#billing-frequency').val();
+                dataObject.NoOfAccounts = $('#no-of-accounts').val();
+                dataObject.LimitedTagService = $('.noOfTag:checked').val();
+                dataObject.LowSpeedOfInteraction = $('.Speed:checked').val();
+                dataObject.AllowSuperTargeting = $('#supertarget-checkbox').prop('checked');
+                dataObject.AllowNegativeTags = $('#negative-key-checkbox').prop('checked');
+                if ($('#billing-frequency').val() == "Trail") {
+                    dataObject.IsTrail = true;
+                    dataObject.TrailDays = $('#TrailDaysInput').val();
+
+                }
+                if ($('.noOfTag:checked').val() == "true") {
+                    //dataObject.IsTrail = true;
+                    dataObject.TagLimit = $('#TagLimitInput').val();
+
+                }
+                return dataObject;
+            }
+
+            //add plan
+            $('#AddPlanBtn').click(function () {
+                dataObject = SubscriptionPlanDataObjCreate();
+
+                if(dataObject.Title!="" && dataObject.Price != "" && dataObject.BillingFrequency !="0" && dataObject.NoOfAccounts!=""){
+                    $.ajax({
+                        type: "POST",
+                        url: '/Admin/AddPlan',
+                        data: { planObject: dataObject },
+                        success: function (response) {
+                            $('#AddUpdatePlanModal').modal('hide');
+                            if (response == true) {
+                                toastr.success('Successfully added a plan.');
+                                $('#ManagePlansTable').dataTable().fnDestroy();
+                                LoadPlans(); 
+                            } else {
+                                toastr.error('Unable to add this plan.');
+
+                            }
+                        }
+                    });
+                }
+                else {
+                    toastr.error("Please fill the required fields");
+                    return false;
+                    }
+
+
+
+            });
+
+            //update plan
+            $('#UpdatePlanBtn').click(function () {
+                dataObject = SubscriptionPlanDataObjCreate();
+                dataObject.Id = $('#planIdToUpdate').val();
+                if (dataObject.Title != "" && dataObject.Price != "" && dataObject.BillingFrequency != "0" && dataObject.NoOfAccounts != "") {
+                    $.ajax({
+                        type: "POST",
+                        url: '/Admin/UpdatePlan',
+                        data: { planObject: dataObject },
+                        success: function (response) {
+                            $('#AddUpdatePlanModal').modal('hide');
+                            if (response == true) {
+                                toastr.success('Successfully update a plan.');
+                                $('#ManagePlansTable').dataTable().fnDestroy();
+                                LoadPlans();
+                            } else {
+                                toastr.error('Unable to update this plan.');
+
+                            }
+                        }
+                    });
+                }
+                else {
+                    toastr.error("Please fill the required fields");
+                    return false;
+                }
+
+
+
+            });
+
+            function dynamicBtnBind() {
+                //remove plan
+                $('.removePlan').on('click', function (e) {
+                    debugger;
+                    $.ajax({
+                        type: "GET",
+                        url: '/Admin/RemovePlan',
+                        data: { planId: e.target.id },
+                        success: function (response) {
+                            if (response == true) {
+                                toastr.success('Successfully removed a plan.');
+                                $('#ManagePlansTable').dataTable().fnDestroy();
+                                LoadPlans();
+                            } else {
+                                toastr.success('Unable to remove this plan.');
+
+                            }
+                        }
+                    });
+
+                });
+
+             
+            }
+            
+        });//end ready function
+        function CheckTrail() {
+            if ($('#billing-frequency').val() == "Trail") {
+                $('#TrailDaysInput').show();
+
+            } else {
+                $('#TrailDaysInput').hide();
+            }
+        }
+
+        function OpenUpdateScheduleModal(id) {
+                    $.ajax({
+                        type: "GET",
+                        url: '/Admin/GetAPlan',
+                        data: { PlanId: id },
+                        success: function (response) {
+                            if (response.status == true) {
+                                $('#plan-title').val(response.plan.Title);
+                                $('#plan-price').val(response.plan.Price);
+                                $('#billing-frequency').val(response.plan.BillingFrequency);
+                                $('#no-of-accounts').val(response.plan.NoOfAccounts);
+                                $('[name="noOfTag"]').val([response.plan.LimitedTagService]);
+                                $('[name="Speed"]').val([response.plan.LowSpeedOfInteraction]);
+                                $('#supertarget-checkbox').prop('checked', response.plan.AllowSuperTargeting);
+                                $('#negative-key-checkbox').prop('checked', response.plan.AllowNegativeTags);
+                                $('#planIdToUpdate').val(response.plan.Id);
+
+                                if ($('#billing-frequency').val() == "Trail") {
+                                    $('#TrailDaysInput').val(response.plan.TrailDays);
+                                    $('#TrailDaysInput').show();
+
+                                }
+                                if ($('.noOfTag:checked').val() == "true") {
+                                    $('#TagLimitInput').val(response.plan.TagLimit);
+                                    $('#TagLimitInput').show();
+                                }
+                                $('#AddPlanBtn').hide();
+                                $('#UpdatePlanBtn').show();
+
+                                $('#AddUpdatePlanModal').modal('show');
+                            }
+                            else {
+                                toastr.error('Something went wrong.');
+                            }
+                        }
+                    });
+             }
+        function checkTagLimit() {
+            if ($('.noOfTag:checked').val() == "true") {
+                $('#TagLimitInput').show();
+
+            } else {
+                $('#TagLimitInput').hide();
+            }
+            ;
+            
+        }
+    </script>
+}

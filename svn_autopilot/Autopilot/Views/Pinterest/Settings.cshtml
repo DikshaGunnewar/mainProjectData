@@ -1,0 +1,1277 @@
+﻿@model EntitiesLayer.ViewModel.SocialMediaVM
+@using ServiceLayer.EnumStore;
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@Model.UserName</h3>
+
+
+    @*<h3>@Model</h3>*@
+    @Html.AntiForgeryToken()
+    <div class="panel panel-filled col-sm-12">
+        <div class="panel-heading">@ViewBag.Content</div>
+        <div class="panel-body">
+            <div class="row clearfix">
+                <div class="col-lg-1 " >
+                    @if (@Model.ProfilepicUrl == null)
+                    {
+                        Model.ProfilepicUrl = "../Images/imagesplaceholder.jpeg";
+                    }
+
+                    <img src="@Model.ProfilepicUrl" style="width:45px" class="img-circle" />
+                </div>
+                <div class="col-lg-11 pull-right">
+                    <h4>
+                        <i class="fa fa-pinterest text-primary"></i> @Model.UserName<small class="text-primary">
+                            @if (Model.IsSubscribed == false && Model.IsTrail == true)
+                            { <span>free-trail</span>}
+                            else if (Model.IsSubscribed == true)
+                            {<span> @Model.planName-plan</span> }
+                    </small>
+                </h4>
+                    @if (Model.Status == false) {
+                    <button class="btn btn-danger pull-right"><i class="fa fa-play"></i> Service Stopped</button>
+
+                    }
+                    else if (Model.Status == true)
+                    {
+                    <button class="btn btn-success pull-right"><i class="fa fa-stop"></i> Service Running <i class="fa fa-spinner fa-spin"></i></button>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+                        <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"><i class="fa fa-cog" ></i> Settings</a></li>
+                            <li class=""><a data-toggle="tab"  href="#tab-2" aria-expanded="false"><i class="fa fa-line-chart "></i> Stats</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false"><i class="fa fa-key "></i> Access</a></li>
+
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    <div class="panel panel-filled">
+                                        <div class="panel-heading">
+                                            <div class="panel-tools">
+                                                <a class="btn btn-primary" onclick="OpenAddScheduleModal()"><i class="fa fa-plus"></i> Schedule pin</a>
+                                                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            </div>
+                                            <h5><strong>Schedule Pins </strong> <small> </small></h5>
+                                        </div>
+                                        <div class="panel-body">
+
+                                            <div class="col-lg-12">
+                                                <table id="schedulePinTable" class="table table-responsive table-vertical-align-middle">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                Schedule Date
+                                                            </th>
+                                                            <th>
+                                                                Board
+                                                            </th>
+                                                            <th>
+                                                                Note
+                                                            </th>
+                                                            <th>
+                                                                Picture
+                                                            </th>
+                                                            <th>
+                                                                Action
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="SchedulePinList"></tbody>
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-filled">
+                                        <div class="panel-heading">
+                                            <div class="panel-tools">
+                                                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            </div>
+                                            <h5><strong>Tags </strong> <small> These are the keywords used to look for media to interact with</small></h5>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="col-lg-12">
+                                                <div id="TagList">
+
+                                                </div>
+                                                <div class="input-group m-b-xs m-t-xs">
+                                                    <input class="form-control" type="text" id="addTagInput" onkeyup="PressEnterBtn(event)" placeholder="Write one Tag here">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-w-md btn-accent addTagInputBtn" type="button" id="addTagInputBtn">Add Tag</button>
+                                                        @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @*<div class="col-lg-12">
+                                                <div class="panel panel-filled panel-c-warning">
+                                                    <div class="panel-heading">
+                                                        <div class="panel-tools">
+                                                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                                        </div>
+                                                        <i class="fa fa-language"></i> Select allowed languages to interact with.
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <select class="select2_language form-control" data-placeholder="Select Language" onchange="SetLanguagePreferences()" multiple="multiple" style="width: 100%">
+
+                                                            @foreach (var item in ViewBag.Languages)
+                                                            {
+                                                                <option value="@item.Id">@item.Language</option>
+                                                            }
+
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+                                            </div>*@
+
+                                        </div>
+                                        </div>
+
+                                        <!--Super Targeting-->
+                                        <div class="panel panel-filled">
+                                            <div class="panel-heading">
+                                                <div class="panel-tools">
+                                                    <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                                </div>
+                                                <h5><strong>My Boards</strong> <small> Associate your boards to your following boards. Here you can choose in which board you want to pinned.</small></h5>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="col-lg-12">
+                                                    <div id="MyBoardList">
+
+                                                    </div>
+                                                    <div class="input-group m-b-xs m-t-xs col-lg-12">
+                                                        <input class="form-control" type="text" id="user-list" onkeyup="SearchUser(event)" placeholder="Search By User name">
+                                  
+                                                    </div>
+
+                                                    <div class="SuperTargetResult col-lg-12">
+                                                        <ul class="user-list"></ul>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="input-group m-b-xs m-t-xs">
+                                                        <div class="input-group-btn">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!--Blocked Tags-->
+                                        <div class="panel panel-filled">
+                                            <div class="panel-heading">
+                                                <div class="panel-tools">
+                                                    <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                                </div>
+                                                <h5><strong>Blocked Tags </strong> <small> Any tag added here will prevent any interaction with any tweet/media containing them</small></h5>
+
+                                            </div>
+                                            <div class="panel-body">
+
+                                                <div class="col-lg-12">
+                                                    <div id="blockTagList">
+
+                                                    </div>
+                                                    <div class="input-group m-b-xs m-t-xs">
+                                                        <input class="form-control" id="blockTagInput" type="text" onkeyup="PressEnterBtn(event)" placeholder="Write One Keyword">
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-w-md btn-accent" id="blockTagInputBtn" type="button">Block Tag </button>
+                                                            @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="input-group m-b-xs m-t-xs">
+                                                        <div class="input-group-btn">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    </div>
+                                    <div id="tab-2" class="tab-pane">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-lg-9">
+                                                    @*stats column*@
+                                                    <div class="row">
+                                                        <div class="col-lg-4 box">
+                                                            <div class="text-inner">
+                                                                <h2 id="todaysConversion">0</h2>
+                                                                <p>Today conversions</p>
+                                                            </div>
+                                                            <div class="icon">
+                                                                <i class="fa fa-user-plus"></i>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="col-lg-4 box">
+                                                            <div class="text-inner">
+                                                                <h2 id="weekConversion">0</h2>
+                                                                <p>Week conversions</p>
+                                                            </div>
+                                                            <div class="icon">
+                                                                <i class="fa fa-users"></i>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="col-lg-4 box">
+                                                            <div class="text-inner">
+                                                                <h2 id="totalConversion">0</h2>
+                                                                <p>Total conversions</p>
+                                                            </div>
+                                                            <div class="icon">
+                                                                <i class="fa fa-trophy"></i>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        @*chart row*@
+                                                        <div class="col-md-6">
+                                                            <div class="panel">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-tools">
+                                                                        <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                                                        @*<a class="panel-close"><i class="fa fa-times"></i></a>*@
+                                                                    </div>
+                                                                    Last Week's Conversions
+                                                                </div>
+                                                                <div class="panel-body">
+                                                                    <div>
+                                                                        <canvas id="sharpLineOptions" height="180"></canvas>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="panel">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-tools">
+                                                                        <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                                                        @*<a class="panel-close"><i class="fa fa-times"></i></a>*@
+                                                                    </div>
+                                                                    Last Week's Followers
+                                                                </div>
+                                                                <div class="panel-body">
+                                                                    <div>
+                                                                        <canvas id="sharpLineOptions2" height="140"></canvas>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="panel">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-tools">
+                                                                        <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                                                        @*<a class="panel-close"><i class="fa fa-times"></i></a>*@
+                                                                    </div>
+                                                                    <span class="fa fa-users"></span> Latest Users Conversions
+                                                                </div>
+                                                                <div class="panel-body latestUserConversion">
+                                                                    <ul class="conversion-list"></ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="panel">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-tools">
+                                                                        <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                                                        @*<a class="panel-close"><i class="fa fa-times"></i></a>*@
+                                                                    </div>
+                                                                    <span class="fa fa-tags"></span> Tags Performance
+                                                                </div>
+                                                                <div class="panel-body tagsPerformance">
+                                                                    <ul class="tags-chart"></ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="panel panel-filled  panel-c-accent-top">
+                                                        <div class="panel-heading">
+                                                            <i class="fa fa-circle-o-notch fa-spin"></i> Recent Activity
+                                                        </div>
+                                                        <div class="panel-body" id="recent-activity">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div id="tab-3" class="tab-pane">
+                                        <div class="panel-body">
+                                            @Html.Action("UserManagement", "Users", new { socialId = Model.Id })
+    
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                    </div>
+    
+    
+
+<div class="modal fade" id="AddScheduleModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h6 class="modal-title">Schedule a pin</h6>
+            </div>
+            <div class="modal-body">
+                <form id="AddUpdateSchedulePin">
+                    <input type="hidden" id="schedulePinId"/>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Schedule Time*</label>
+                            <input class="form-control form_datetime" id="scheduleDateTime" type="text" placeholder="Set Schedule time">
+                            @*<input size="16" type="text" placeholder="Set Schedule time" readonly class="form_datetime">*@
+
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Board*</label>
+
+                            <select class="select2_board form-control" style="width: 100%"></select>
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Note*</label>
+
+                            <input class="form-control" id="schedulePinNote" type="text" placeholder="Note">
+
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Image*</label>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label class="btn btn-default" for="file-selector1">
+                                        <input id="file-selector1" type="file" style="display:none;"
+                                               onchange="document.getElementById('previewImage').src = window.URL.createObjectURL(this.files[0])">
+                                        Upload file
+                                    </label>
+                                </div>
+                                <div class="col-sm-6 pull-right">
+                                    <img class="img-responsive" id="previewImage" style="width:80px"  />
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-accent" id="AddSchedulePinBtn" onclick="AddSchedulePin()">Save</button>
+                <button type="button" class="btn btn-accent" id="UpdateSchedulePinBtn" onclick="UpdateSchedulePin()">Update</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="boardMappingModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h6 class="modal-title">Select boards to pinit <span id="board-placeholder"></span> board.</h6>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;">
+                <input type="hidden" id="hiddenBoardId"/>
+                <div id="boardMapModalBody">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                <button type="button" class="btn btn-accent" data-dismiss="modal" id="MapBoardSubmitBtn">Submit</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section script{
+
+  <script>
+    $(document).ready(function () {
+        $(".form_datetime").datetimepicker({
+
+            format: 'YYYY-MM-DD hh:mm:ss A'
+        });
+        LoadSchedulePin();
+        LoadTags();
+        LoadMyBoards();
+        LoadRecentActivity();
+        GetConversion();
+        GetFollowersGrowth();
+        GetConversionCount();
+
+        var selectedLanguages = '@Model.AccSettings.Language';
+        $(".select2_language").val(selectedLanguages.split(','));
+        $(".select2_language").select2();
+
+    });
+    //image preview
+    var targetUserStack = [];
+    //function to load all added tags
+    var globalOptions = {
+        responsive: true,
+        legend: {
+            labels: {
+                fontColor: "#90969D"
+            },
+
+        },
+        scales: {
+            xAxes: [{
+                ticks: {
+                    fontColor: "#90969D",
+                    maxRotation: 60,
+                    minRotation: 30
+                },
+                gridLines: {
+                    color: "#37393F"
+                },
+
+            }],
+            yAxes: [{
+                ticks: {
+                    fontColor: "#90969D"
+                },
+                gridLines: {
+                    color: "#37393F"
+                }
+            }]
+        }
+    };
+
+    function GetConversion() {
+
+        $.ajax({
+            type: "GET",
+            url: '/Users/GetConversionStats',
+            data: { socialId: '@Model.Id' },
+
+            success: function (response) {
+
+                if (response.length > 0) {
+                    var label = []; var dataSet = [];
+                    $.each(response, function (key, value) {
+                        label.push(value.label);
+                        dataSet.push(value.count);
+                    })
+                    debugger
+                    var followerGrowthLineData = {
+                        labels: label,
+                        datasets: [
+                            {
+                                label: "Conversion Count",
+                                backgroundColor: 'rgba(246,168,33, 0.1)',
+                                borderColor: "#f6a821",
+                                pointBorderWidth: 0,
+                                pointRadius: 2,
+                                pointBorderColor: '#f6a821',
+                                borderWidth: 1,
+                                data: dataSet,
+                                lineTension: 0
+                            }
+                        ]
+                    };
+                    var c2 = document.getElementById("sharpLineOptions").getContext("2d");
+                    new Chart(c2, { type: 'line', data: followerGrowthLineData, options: globalOptions });
+                }
+            }
+        });
+
+
+
+        $.ajax({
+            type: "GET",
+            url: '/Users/GetAllConversion',
+            data: { socialId: '@Model.Id' },
+
+            success: function (response) {
+                debugger;
+
+                $('.conversion-list').empty();
+
+                $.each(response, function (key, item) {
+                    var url = "https://www.twitter.com/" + item.Username;
+                    var userConversionElement = '<li class="col-lg-2"><img src="' + item.ProfilePic + '" class="img-circle"><a href="' + url + '" class="users-list-name" target="_blank"><span class="userConverionName">' + item.Username + '</span></a><span><small>' + item.Tag + '</small> </span></li>';
+                    $('.conversion-list').append(userConversionElement);
+                });
+
+            }
+        });
+        //Tag performance
+        $.ajax({
+            type: "GET",
+            url: '/Users/GetTagPerformance',
+            data: { socialId: '@Model.Id' },
+
+            success: function (response) {
+                $('.tags-chart').empty();
+                var limit = 10;
+                $.each(response, function (key, item) {
+                    if (item.count > 10) {
+                        limit = 100;
+                    }
+                });
+                $.each(response, function (key, item) {
+                    var tagPercent = (parseFloat(item.count) * 100) / limit;
+                    var width = "";
+                    var progressBar = "";
+
+                    if (tagPercent > 0) { width = 'style = "width: ' + tagPercent + '%"'; progressBar = '<div ' + width + ' aria-valuemax="' + limit + '" aria-valuemin="0" aria-valuenow="' + item.count + '" role="progressbar" class=" progress-bar progress-bar-warning"></div>'; }
+                    var element = '<p>' + item.label + '</p><div class="progress m-t-xs full progress-small">' + progressBar + '</div>';
+                    $('.tags-chart').append(element);
+                });
+
+            }
+        });
+
+
+
+    }//function GetConversion end
+
+
+    function GetFollowersGrowth() {
+
+
+        $.ajax({
+            type: "GET",
+            url: '/Users/GetFollowersGrowth',
+            data: { socialId: '@Model.Id' },
+
+            success: function (response) {
+
+                if (response.length > 0) {
+                    var label = []; var dataSet = [];
+                    $.each(response, function (key, value) {
+                        label.push(value.label);
+                        dataSet.push(value.count);
+                    })
+                    debugger
+                    var newConversionLineData = {
+                        labels: label,
+                        datasets: [
+                            {
+                                label: "Followers Count",
+                                backgroundColor: 'rgba(246,168,33, 0.1)',
+                                borderColor: "#f6a821",
+                                pointBorderWidth: 0,
+                                pointRadius: 2,
+                                pointBorderColor: '#f6a821',
+                                borderWidth: 1,
+                                data: dataSet,
+                                lineTension: 0
+                            }
+                        ]
+                    };
+                    var c3 = document.getElementById("sharpLineOptions2").getContext("2d");
+                    new Chart(c3, { type: 'line', data: newConversionLineData, options: globalOptions });
+                }
+            }
+        });
+
+    }
+
+
+    function GetConversionCount() {
+        $.ajax({
+            type: "GET",
+            url: '/Users/GetConversionCount',
+            data: { socialId: '@Model.Id' },
+
+            success: function (response) {
+
+                $("#todaysConversion").text(response.todayConversion);
+
+                $("#weekConversion").text(response.weekConversion);
+
+                $("#totalConversion").text(response.totalConversion);
+            }
+        });
+    }
+
+    function AddSchedulePin() {
+        var date = $('.form_datetime').val();
+        var note = $('#schedulePinNote').val();
+        var board = $('.select2_board').val();
+        var data = new FormData();
+        var file = document.querySelector('#file-selector1').files[0];
+        debugger;
+        if (date != "" && note != "" && board != "0" && file != undefined) {
+            // Add the uploaded image content to the form data collection
+            data.append("UploadedImage", file);
+            $.ajax({
+                type: "POST",
+                url: '/Users/ImageUpload',
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (response) {
+                    if (response.status == true) {
+                        var dataObject = {};
+                        dataObject.SocialId = '@Model.Id';
+                        dataObject.note = note;
+                        dataObject.image_url = response.fileName;
+                        dataObject.board = board;
+                        dataObject.ScheduleDate = date;
+                        SavePinInformation(dataObject);
+                    }
+                    else {
+                        toastr.error("Something went wrong.");
+                    }
+
+                }
+            });
+        }
+        else {
+            toastr.error("Please fill the required fields");
+        }
+
+    }
+
+    function UpdateSchedulePin() {
+        var date = $('.form_datetime').val();
+        var note = $('#schedulePinNote').val();
+        var board = $('.select2_board').val();
+        var data = new FormData();
+        var file = document.querySelector('#file-selector1').files[0];
+        debugger;
+        if (date != "" && note != "" && board != "0") {
+            // Add the uploaded image content to the form data collection
+            if (file == undefined) {
+                var dataObject = {};
+                dataObject.Id = $('#schedulePinId').val();
+                dataObject.SocialId = '@Model.Id';
+                dataObject.image_url = $('#previewImage').attr('name');
+                dataObject.note = note;
+                dataObject.board = board;
+                dataObject.ScheduleDate = date;
+                SavePinInformation(dataObject);
+            }
+            else {
+                data.append("UploadedImage", file);
+                $.ajax({
+                    type: "POST",
+                    url: '/Users/ImageUpload',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (response) {
+                        if (response.status == true) {
+                            var dataObject = {};
+                            dataObject.Id = $('#schedulePinId').val();
+                            dataObject.SocialId = '@Model.Id';
+                            dataObject.note = note;
+                            dataObject.image_url = response.fileName;
+                            dataObject.board = board;
+                            dataObject.ScheduleDate = date;
+                            SavePinInformation(dataObject);
+                        }
+                        else {
+                            toastr.error("Something went wrong.");
+                        }
+
+                    }
+                });
+            }
+
+
+        }
+        else {
+            toastr.error("Please fill the required fields");
+        }
+
+    }
+
+
+    function SavePinInformation(data) {
+
+        $.ajax({
+            type: "POST",
+            url: '/Pinterest/SaveSchedulePin',
+            data: { PinInfo: data },
+            success: function (response) {
+                if (response == true) {
+                    $('#schedulePinTable').dataTable().fnDestroy();
+                    LoadSchedulePin();
+                    $('#AddScheduleModal').modal('hide');
+                    toastr.success("Successfully scheduled this pin.")
+                }
+                else {
+                    toastr.error("Something went wrong.");
+                }
+
+            }
+        });
+    }
+
+    function LoadSchedulePin() {
+        $.ajax({
+            type: "GET",
+            url: '/Pinterest/GetSchedulePin',
+            data: { socialId: '@Model.Id' },
+            success: function (response) {
+                if (response.status == true && response.task.length > 0) {
+                    $('#SchedulePinList').empty();
+                    $.each(response.task, function (key, value) {
+                        //var stillUtc = moment.utc(response.pinInfo.ScheduleDate).format('YYYY-MM-DD HH:mm:ss');
+
+                        var scheduleDateTime = moment.utc(value.ScheduleDate).local().format("YYYY-MM-DD HH:mm A")
+                        var element = '<tr><td><div class="small"> ' + scheduleDateTime + '</div></td>' +
+                                  '<td><div class="small">  ' + value.boardName + '</div></td>' +
+                                  '<td><div class="small">  ' + value.note + '</div></td>' +
+                                  '<td><div class="small ">  <img  class="fullImage" id="' + value.Id + '" alt="' + value.note + '" src="../../Images/SchedulePins/' + value.image_url + '" style="width:50px"></div></td>' +
+                                '<td><a class="removeSchedulePin"><i  id="' + value.Id + '" class="fa fa-trash-o"></i></a>   <a class="editSchedulePin" onclick="OpenUpdateScheduleModal(' + value.Id + ')"><i  id="' + value.Id + '" class="fa fa-pencil-square-o"></i></a></td></tr>';
+
+                        $('#SchedulePinList').append(element);
+
+                    });
+                    $('#schedulePinTable').DataTable({
+                        "dom": "<'row'<'col-sm-6'l><'col-sm-6'f>>t<'row'<'col-sm-6'i><'col-sm-6'p>>"
+                    });
+                }
+                dynamicBtnBind();
+            }
+        });
+    }
+
+
+
+    function OpenAddScheduleModal() {
+        $.ajax({
+            type: "GET",
+            url: '/Pinterest/GetBoardList',
+            data: { socialId: '@Model.Id' },
+            success: function (response) {
+
+                if (response.status == true && response.boards.length > 0) {
+
+                    $('.select2_board').empty();
+                    $('.select2_board').append('<option value="0">Select a board</option>');
+                    $.each(response.boards, function (key, value) {
+
+                        var option = '<option value="' + value.id + '">' + value.name + '</option>';
+                        $('.select2_board').append(option);
+                    });
+                }
+                $('.form_datetime').val("");
+                $('.select2_board').val('0');
+                $('#previewImage').attr('src', '../../Images/imagesplaceholder.jpeg');
+                $('#schedulePinNote').val("");
+                $('#UpdateSchedulePinBtn').hide();
+                $('#AddSchedulePinBtn').show();
+                $('#AddScheduleModal').modal('show');
+            }
+        });
+
+    }
+
+    function OpenUpdateScheduleModal(id) {
+        $.ajax({
+            type: "GET",
+            url: '/Pinterest/GetBoardList',
+            data: { socialId: '@Model.Id' },
+            success: function (response) {
+                debugger;
+                if (response.status == true && response.boards.length > 0) {
+
+                    $('.select2_board').empty();
+                    $('.select2_board').append('<option value="0">Select a board</option>');
+                    $.each(response.boards, function (key, value) {
+
+                        var option = '<option value="' + value.id + '">' + value.name + '</option>';
+                        $('.select2_board').append(option);
+                    });
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: '/Pinterest/GetASchedulePin',
+                    data: { schedulePinId: id },
+                    success: function (response) {
+                        debugger;
+                        if (response.status == true) {
+                            var scheduleDateTime = moment.utc(moment(response.pinInfo.ScheduleDate).format("YYYY-MM-DD HH:mm A")).toDate();
+                            //var stillUtc = moment.utc(response.pinInfo.ScheduleDate).format('YYYY-MM-DD HH:mm:ss');
+                            $('.form_datetime').val(moment(scheduleDateTime).format("YYYY-MM-DD HH:mm A"));
+                            $(".select2_board").val(response.pinInfo.board);
+                            // $(".select2_board").select2().val(response.pinInfo.board).trigger("change");
+                            $('#schedulePinNote').val(response.pinInfo.note);
+                            $('#schedulePinId').val(response.pinInfo.Id);
+                            $('#previewImage').attr('src', '../../Images/SchedulePins/' + response.pinInfo.image_url).attr('name', response.pinInfo.image_url);
+                            $('#UpdateSchedulePinBtn').show();
+                            $('#AddSchedulePinBtn').hide();
+                            $('#AddScheduleModal').modal('show');
+                        }
+                        else {
+                            toastr.error('Something went wrong.');
+                        }
+                    }
+                });
+
+            }
+        });
+
+
+
+
+    }
+
+
+          //function to load all added tags
+          function LoadTags() {
+              var SocailId = '@Model.Id';
+              $.ajax({
+                  type: "POST",
+                  url: '/Users/GetTags',
+                  data: { socialId: SocailId },
+
+                  success: function (response) {
+                      $('#blockTagList').empty();
+                      $('#TagList').empty();
+                      $.each(response, function (key, item) {
+                          if (item.IsBlocked == false) {
+
+                              var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#' + item.TagName + ' <span class="caret"></span></a>' +
+                                                  '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                                  '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                              $('#TagList').append(element);
+                          }
+                          else if (item.IsBlocked == true) {
+                              var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#' + item.TagName + ' <span class="caret"></span></a>' +
+                                             '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                             '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                              $('#blockTagList').append(element);
+                          }
+                      });
+                      dynamicBtnBind();
+                  }
+              });
+
+          } //function LoadTags  end
+
+      function LoadRecentActivity() {
+
+          var SocailId = '@Model.Id';
+          $.ajax({
+              type: "GET",
+              url: '/Pinterest/RecentActivity',
+              data: { socialId: SocailId },
+
+              success: function (response) {
+                  $('#recent-activity').empty();
+                  debugger
+                  if (response.status != false && response.activity.length > 0) {
+
+                      $.each(response.activity, function (key, item) {
+                          var activityIcon; var content;
+                          var stillUtc = moment.utc(item.ActivityDate).format('YYYY-MM-DD HH:mm:ss');
+                          var local = moment(item.ActivityDate).local().local().format('YYYY-MM-DD HH:mm:ss');
+                          var since = moment(item.ActivityDate).fromNow();
+
+                          if (item.Activity == '@Activity.Follow.ToString()') { activityIcon = '<i class="fa fa-user-plus"> Follow</i>'; content = item.Content;}
+                          else if (item.Activity == '@Activity.PinIt.ToString()') { activityIcon = '<i class="fa fa-pinterest"></i>'; content = '<img src="' + item.Content + '" class="img-responsive" width="40px;"/>'; }
+                          var element = '<div class="panel"><div class=""><img src="' + item.ProfilePic + '" class="img-circle" style="width:20px"> ' + item.UserName + ' <p class="pull-right">' + since + '</p></div><div class="panel-body">' +  + ' <div ><i class="fa fa-twitter text-primary pull-left"></i> ' + activityIcon + ' <p class="pull-right">' + item.Tag + '</p></div></div></div>'
+                          $('#recent-activity').append(element);
+                      })//each end
+                  }
+                  else {
+                      $('#recent-activity').append('<div>No Recent Activities</div>')
+                  }
+
+              }
+          });
+
+
+      }//function to load recent activities
+
+
+    //function to load all Targetuser
+    function LoadMyBoards() {
+        var SocailId = '@Model.Id';
+        $.ajax({
+            type: "GET",
+            url: '/Pinterest/GetBoardList',
+            data: { socialId: SocailId },
+
+            success: function (response) {
+                $('#MyBoardList').empty();
+               //$('#TargetUserList').empty();
+                $.each(response.boards, function (key, item) {
+  
+                    var element = '<div class="btn-group"><a type="button"  id="' + item.id + '" class="btn btn-primary dropdown-toggle associateBoard" name="'+item.name+'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.name + '</a></div>';
+                    $('#MyBoardList').append(element);
+                    
+                });
+                dynamicBtnBind();
+            }
+        });
+    }//function LoadTargetuser end
+
+    //SetLanguagePreferences function
+    function SetLanguagePreferences() {
+        debugger;
+        var languageId = $('.select2_language').val();
+        $.ajax({
+            type: "POST",
+            url: '/Users/UpdateLanguages',
+            data: { languageIds: languageId.join(','), socialId: '@Model.Id' },
+            success: function (response) {
+                // alert to the user for request send successfull
+                if (response.status == false) {
+                    toastr.error("Unable to add tag.");
+                }
+            }
+        });
+
+    }
+
+    $(document).ready(function () {
+        $('#addTagInputBtn').on('click', function () {
+
+            var Tag = $('#addTagInput').val();
+            var SocailId = '@Model.Id';
+            $.ajax({
+                type: "POST",
+                url: '/Users/AddBlockTags',
+                data: { tag: Tag, socialId: SocailId, IsBlocked: false },
+
+                success: function (response) {
+                    // alert to the user for request send successfull
+                    if (response.status == true) {
+                        $('#TagList').empty();
+                        $.each(response.tagList, function (key, item) {
+                            if (item.IsBlocked == false) {
+                                // var element = "<button class='btn btn-primary'>" + item.TagName + "</button>"
+                                var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#' + item.TagName + ' <span class="caret"></span></a>' +
+                                                   '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                                  '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                                $('#TagList').append(element);
+                            }
+                        })
+                        dynamicBtnBind();
+                        $('#addTagInput').val('');
+                        toastr.success("Successfully tag added.");
+                    }
+                    else {
+                        toastr.error("You cannot add this tag.");
+                    }
+                }
+            });
+        });
+        //block tag btn event
+        $('#blockTagInputBtn').on('click', function () {
+
+            var Tag = $('#blockTagInput').val();
+            var SocailId = '@Model.Id';
+
+            $.ajax({
+                type: "POST",
+                url: '/Users/AddBlockTags',
+                data: { tag: Tag, socialId: SocailId, IsBlocked: true },
+
+                success: function (response) {
+
+                    // alert to the user for request send successfull
+                    if (response.status == true) {
+                        $('#blockTagList').empty();
+                        $.each(response.tagList, function (key, item) {
+                            if (item.IsBlocked == true) {
+                                //var element = "<button class='btn btn-primary'>" + item.TagName + "</button>"
+                                var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#' + item.TagName + ' <span class="caret"></span></a>' +
+                                    '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                    '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                                $('#blockTagList').append(element);
+                            }
+                        })
+                        dynamicBtnBind();
+                        $('#blockTagInput').val('');
+                        toastr.success("Successfully negative tag added.");
+                    }
+                    else {
+                        toastr.error("Unable to add negative tag.");
+                    }
+
+                }
+            });
+        });
+    })
+
+    //submit form when click on enter
+    function PressEnterBtn(event) {
+
+        if (event.keyCode == 13) {
+
+            $('#' + event.target.id + 'Btn').click();
+
+        }
+    }
+    //search username on the basis of user's query
+
+    function SearchUser(event) {
+        if (event.keyCode == 13) {
+
+            $.ajax({
+                type: "GET",
+                url: '/Pinterest/SearchUser',
+                data: { query: event.target.value, socialId: '@Model.Id' },
+
+                success: function (response) {
+                    //$('.resetSearchDiv').remove();
+                    targetUserStack = [];
+                    var placeholder; var btn;
+                    if (event.target.id == "user-list") { placeholder = $('.user-list'); btn = "addTargetUser"; }
+                    if (event.target.id == "block-user-list") { placeholder = $('.block-user-list'); btn = "addBlockTargetUser"; }
+                    placeholder.empty();
+                    $.each(response, function (key, item) {
+                        targetUserStack.push({ UserName: item.ScreenName, UserId: item.Id, Follower: item.FollowersCount })
+                        var url = "https://www.Pinterest.com/" + item.ScreenName;
+                        var element = '<li class="col-lg-2"><a href="' + url + '" target="_blank"><img src="' + item.ProfileImageUrlHttps + '" class="img-circle"></a><a href="' + url + '" class="users-list-name" target="_blank"><span class="targetUserFollowers">' + item.FollowersCount + 'followers</span></a><button class="btn btn-default btn-sm ' + btn + '"  id="' + item.Id + '"><i class="fa fa-user-plus"></i> ' + item.ScreenName + '</button></li>';
+                        placeholder.append(element);
+                    });
+                    placeholder.parent().after('<div class="resetSearchDiv"><a class="resetSearch" name="' + event.target.id + '"><i class="fa fa-remove"></i> Reset Search</a></div>')
+                    dynamicBtnBind();
+                }
+            });
+        }
+    };
+      $(document).ready(function () {
+          debugger;
+          $('#MapBoardSubmitBtn').click(function () {
+              $('#hiddenBoardId').val();
+              var boardIds = [];
+              $.each($(".followingBoardsCheckbox:checked"), function () {
+                  boardIds.push($(this).val());
+              });
+              LoaderOption('show');
+              $.ajax({
+                  type: "GET",
+                  url: '/Pinterest/SaveBoardMapping',
+                  data: { socialId: '@Model.Id', myBoardId: $('#hiddenBoardId').val(), followingBoardIds: boardIds.join(",") },
+
+                  success: function (response) {
+                      LoaderOption('hide');
+
+                      if (response.status == true) {
+                          toastr.success("Success.");
+
+                      } else {
+                          toastr.error("Something went wrong.");
+                      }
+                  }
+
+              });
+              
+          });
+
+      });
+      
+
+
+    //adding event to dynamic remove tag btn
+    function dynamicBtnBind() {
+
+        $(".fullImage").click(function () {
+            var modal = document.getElementById('fullImageModal');
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            var img = document.getElementById($(this).attr('id'));
+            var modalImg = document.getElementById("img01");
+            var captionText = document.getElementById("caption");
+            $('#fullImageModal .close').show();
+            modal.style.display = "block";
+            modalImg.src = $(this).attr('src');
+            captionText.innerHTML = $(this).attr('alt');
+
+        });
+        $(".removeSchedulePin").click(function (e) {
+            debugger
+            $.ajax({
+                type: "GET",
+                url: '/Pinterest/RemoveSchedulePin',
+                data: { SchedulePinId: e.target.id },
+
+                success: function (response) {
+                    $('#schedulePinTable').dataTable().fnDestroy();
+                    LoadSchedulePin();
+                    if (response == true) {
+
+                        toastr.success("Successfully removed schedule pin.");
+                    }
+                    else {
+                        toastr.error("Something went wrong.");
+                    }
+                }
+            });
+        });
+        //remove tag btn
+        $('.removeTagBtn').on('click', function (e) {
+            $.ajax({
+                type: "POST",
+                url: '/Users/RemoveTag',
+                data: { tagId: e.target.id },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTags();
+                        toastr.success("Successfully removed tag.");
+                    }
+                    else {
+                        toastr.error("Unable to remove tag.");
+                    }
+                }
+            });
+        })  //remove tag btn  end
+        //remove tag btn
+        $('.associateBoard').on('click', function (e) {
+            debugger;
+            $.ajax({
+                type: "GET",
+                url: '/Pinterest/GetFollowingBoardToConnect',
+                data: { socialId: '@Model.Id', myBoardId: e.target.id },
+
+                success: function (response) {
+           
+                    if (response.status == true) {
+                        $('#board-placeholder').text(e.target.name).css('color', '#f6a526');
+                        $('#hiddenBoardId').val(e.target.id);
+                        $('#boardMapModalBody').empty();
+                        $.each(response.list, function (key, value) {
+                            if (value.MapWithOtherBoard != true) {
+                                var element = '<div class="col-sm-4"><input id="' + value.id + '" value="' + value.id + '" class="followingBoardsCheckbox" type="checkbox" > <label>' + value.name + '</label></div>';
+                                $('#boardMapModalBody').append(element);
+
+                                $('#' + value.id).prop('checked', value.IsMap);
+                            }
+                        });
+                        $('#boardMappingModal').modal('show');
+                        //toastr.success("Successfully removed tag.");
+                    }
+                    else {
+                        toastr.error("Something went wrong.");
+                    }
+                }
+            });
+            return false;
+        });
+
+        //remove tag btn  end
+        @*//reset search btn click function
+        $('.resetSearch').on('click', function (e) {
+            debugger
+            $('.' + e.target.name).empty();
+            $('#' + e.target.name).val('');
+            $('.resetSearchDiv').remove();
+
+        })
+        //removeTargetUserBtn
+        $('.removeTargetUserBtn').on('click', function (e) {
+            $.ajax({
+                type: "POST",
+                url: '/Pinterest/RemoveTargetUser',
+                data: { TargetUserId: e.target.id },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTargetuser();
+                        toastr.success("Successfully removed tag.");
+                    }
+                    else {
+                        toastr.error("Unable to remove tag.");
+                    }
+                }
+            });
+        })  //remove tag btn  end
+
+
+        //add target user btn
+        $('.addTargetUser').on('click', function (e) {
+            AddBlockTargetUserCall(false, e.target.id)
+        });
+        //add block target user btn
+        $('.addBlockTargetUser').on('click', function (e) {
+            AddBlockTargetUserCall(true, e.target.id)
+        });
+
+
+        function AddBlockTargetUserCall(isBlocked, userid) {
+            var DataObject = {};
+            $.each(targetUserStack, function (key, item) {
+
+                DataObject.SocailId = '@Model.Id';
+                if (item.UserId == userid) {
+                    DataObject.UserName = item.UserName;
+                    DataObject.SMId = item.UserId;
+                    DataObject.Followers = item.Follower;
+                    DataObject.IsBlocked = isBlocked;
+                }
+            });
+            //ajax call to add target user
+            $.ajax({
+                type: "POST",
+                url: '/Pinterest/AddBlockSuperTargetUser',
+                data: { user: DataObject },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTargetuser();
+                        $('.user-list').empty();
+                        $('.block-user-list').empty();
+                        toastr.success("Success.");
+                    }
+                    else {
+                        toastr.error("Unable to perform task, something went wrong.");
+                    }
+                }
+            });
+        }// end AddBlockTargetUserCall function*@
+    }//dynamicBtnBind function end
+
+</script>
+    }

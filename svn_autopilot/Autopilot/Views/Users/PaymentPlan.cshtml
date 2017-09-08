@@ -1,0 +1,67 @@
+﻿@model EntitiesLayer.Entities.SubscriptionsPlan
+@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using ServiceLayer.EnumStore;
+@{
+    ViewBag.Title = "UserSubscription";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@{
+    ViewBag.Title = "PaymentPlan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Checkout</h2>
+<div class="row">
+
+    @*@if (@Model.FilterSubscribe.c)
+    {
+
+          foreach (var item in Model.subscribe)
+        {*@
+
+            <div class="panel panel-filled col-sm-12">
+                <div class="panel-heading"><i class="fa fa-paypal"></i> Payment Method </div>
+                <div class="panel-body">
+                    <div class="row clearfix">
+                        <div class="col-md-4 col-xs-12 nav nav-stacked plan-features">
+                            Plan  <span class="pull-right"> @Model.Title</span>
+                        </div>
+                        <div class="col-md-4 col-xs-12 nav nav-stacked plan-features ">
+                            <h4 class="stat-label"></h4>
+                        </div>
+                        <div class="col-md-4 col-xs-12 nav nav-stacked plan-features">
+                            <h4 class="stat-label"></h4>
+                        </div>
+                        <hr />
+                        <div class="col-sm-12 nav nav-stacked plan-features">
+                            Accounts
+                            <hr />
+                            <div class="user-image">
+                                @*<img src="@item.ProfilepicUrl" class="img-circle" />*@
+                            </div>
+
+
+                        </div>
+                        <hr />
+
+                        <div class="nav nav-stacked plan-features col-sm-12">
+                            Payment:
+
+                            <div class="panel panel-filled">
+                                <div class="panel-heading">
+                                    <div class="panel-body">
+                                        <button type="button" onclick="location.href='@Url.Action("PaymentWithPaypal", "Payment")'" class="btn btn-lg btn-block center-block"><img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_200x51.png" style="width:150px;padding-right:30px" alt="PayPal"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @*}
+    }*@
+
+</div>

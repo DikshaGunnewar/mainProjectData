@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+   @* <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">*@
+    @Styles.Render("~/bundles/css")
+  @*  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900' rel='stylesheet' type='text/css'>*@
+    @Styles.Render("~/bundles/themesCss")
+
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Header-->
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <div id="mobile-menu">
+                        <div class="left-nav-toggle">
+                            <a href="#">
+                                <i class="stroke-hamburgermenu"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <a class="navbar-brand" href="@Url.Action("Login","Account")">
+                        <img src="~/images/socializy-logo-black.png" />
+
+                        @*SOCIALIFY
+                            <span>v.1.0</span>*@
+                    </a>
+                </div>
+               
+            </div>
+        </nav>
+        <!-- End header-->
+        <!-- Navigation-->
+       
+        <!-- Main content-->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        @RenderBody()
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+        <!-- End main content-->
+    </div>
+
+    <footer>
+        <div style="text-align:center;background-color:black;color:white;bottom:0;">
+
+        </div>
+    </footer>
+
+    <script>
+
+    </script>
+    <!-- App scripts -->
+    @*@Scripts.Render("~/vendor")*@
+
+    @Scripts.Render("~/bundles/js")
+    @Scripts.Render("~/bundles/themesJs")
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+    @System.Web.Optimization.Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            Pace.on("done", function () {
+                debugger;
+                $(".contents").fadeIn(1000);
+            });
+        });
+        toastr.options = {
+            "debug": false,
+            "newestOnTop": false,
+            "positionClass": "toast-top-right",
+            "closeButton": true,
+            "progressBar": true
+        };
+    </script>
+    @RenderSection("script", required: false)
+</body>
+</html>

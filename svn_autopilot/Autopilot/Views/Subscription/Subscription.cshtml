@@ -1,0 +1,224 @@
+﻿@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@model IEnumerable<EntitiesLayer.ViewModel.SocialMediaVM>
+@using ServiceLayer.EnumStore;
+
+@{
+    ViewBag.Title = "Subscription";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h4>Plans</h4>
+
+<div class="row">
+
+    @if (@Model.Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+            <div class="col-lg-3">
+                <div class="panel panel panel-filled panel-b-accent ">
+                    <div class="panel-body">
+                        <h6>@item.UserName</h6>
+                        <div class="panel-body panel-filled">
+
+                            @if (item.Provider == SocialMediaProviders.Twitter.ToString())
+                            {
+                                <span class="m-t-md m-b-xs" style="top:2px"><i class="fa fa-twitter fa-2x"></i></span>
+                            }
+                            else if (item.Provider == SocialMediaProviders.Pinterest.ToString())
+                            {
+                                <span class="m-t-md m-b-xs" style="top: 2px"><i class="fa fa-pinterest fa-2x"></i></span>
+                            }
+                            else if (item.Provider == SocialMediaProviders.LinkedIn.ToString())
+                            {
+                                <span class="m-t-md m-b-xs" style="top: 2px"><i class="fa fa-linkedin fa-2x"></i></span>
+                            }
+                            else if (item.Provider == SocialMediaProviders.Instagram.ToString())
+                            {
+                                <span class="m-t-md m-b-xs" style="top: 2px"><i class="fa fa-instagram fa-2x"></i></span>
+                            }
+                            else if (item.Provider == SocialMediaProviders.Spotify.ToString())
+                            {
+                                <span class="m-t-md m-b-xs"><i class="fa fa-spotify fa-2x"></i></span>
+                            }
+
+                            @if (@item.ProfilepicUrl == null)
+                            {
+                                item.ProfilepicUrl = "../Images/imagesplaceholder.jpeg";
+                            }
+                            <div class="user-image top-right">
+                                <img src="@item.ProfilepicUrl" class="img-circle" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @*<div class="panel-footer  user-footer">
+
+                <div class="row text-center">
+
+                </div>
+
+            </div>*@
+                </div>
+
+
+
+            </div>
+        }
+
+    }
+
+
+
+
+    @*@foreach (string key in session.Keys)
+        {
+            <p>Key: @key - Value: @session[key].ToString()</p>
+        }*@
+</div>
+
+@*<div class="panel panel-filled col-sm-12">
+        <div class="panel-heading"><i class="fa fa-users"></i> Select your accounts </div>
+        <div class="panel-body">
+            <div class="row clearfix">
+                <div class="col-lg-1 " style="width:45px">
+                    @*<img src="@Model.ProfilepicUrl" style="width:45px" class="img-circle" />
+                </div>
+                <div class="col-lg-11 pull-right">
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<div class="panel panel-filled col-sm-12">
+
+    <div class="panel panel-filled col-sm-6">
+        <div class="panel-heading">
+            businees <div>
+                <div class="panel-body">
+                    <div class="row clearfix">
+                        <div class="col-lg-1 " style="width:45px">
+                            @*<img src="@Model.ProfilepicUrl" style="width:45px" class="img-circle" />*@
+                        </div>
+                        <div class="col-lg-11 pull-right">
+                            <h4><i class=""></i></h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row clearfix">
+                        <div class="nav nav-stacked plan-features"></div>
+                        <i class="fa fa-tags feature-icon"></i>
+                        Number of tags per service
+
+                        <span class="pull-right badge bg-green">Unlimited</span>
+                        <hr />
+                        <div class="nav nav-stacked plan-features"></div>
+                        <i class="fa fa-dashboard feature-icon"></i>
+                        Speed of interaction
+                        <span class="pull-right badge bg-green">Full speed</span>
+                        <hr />
+                        <div class="nav nav-stacked plan-features"></div>
+                        <i class="fa fa-map-marker feature-icon"></i>
+                        Located Keywords
+                        <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+                        <hr />
+
+                        <div class="nav nav-stacked plan-features"></div>
+                        <i class="fa fa-warning feature-icon"></i>
+                        Explicit Content Filter
+                        <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+                        <hr />
+
+                        <div class="nav nav-stacked plan-features"></div>
+                        <i class="fa fa-minus-circle feature-icon"></i>
+                        Negative Keywords
+                        <i class="fa fa-info-circle"></i>
+                        <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+
+                        <hr />
+                        <div class="nav nav-stacked plan-features"></div>
+                        <i class="fa fa-users feature-icon"></i>
+                        Super Targeting
+                        <i class="fa fa-info-circle"></i>
+                        <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+
+                    </div>
+                    <hr />
+                    @* <button type="button" class="btn btn-lg btn-success btn-block">Subscribe</button>*@
+                    <button class="btn btn-lg btn-yellow btn-block center-block" type="button" id="subscribe" onclick="location.href='@Url.Action("PaymentPlan", "Subscription")'"> Subscribe </button>
+                    @*<button type="button" onclick="Scheduler()" class="btn btn-success pull-right"><i class="fa fa-stop"></i> Service Running <i class="fa fa-spinner fa-spin"></i></button>*@
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="panel panel-filled col-sm-6">
+        <div class="panel-heading"> Premium</div>
+        <div class="panel-body">
+            <div class="row clearfix">
+                <div class="col-lg-1 " style="width:45px">
+
+                    @*<img src="@Model.ProfilepicUrl" style="width:45px" class="img-circle" />*@
+                </div>
+                <div class="col-lg-11 pull-right">
+                    <h4><i class=""></i></h4>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="row clearfix">
+                <div class="nav nav-stacked plan-features"></div>
+                <i class="fa fa-tags feature-icon"></i>
+                Number of tags per service
+
+                <span class="pull-right badge bg-green">Unlimited</span>
+                <hr />
+                <div class="nav nav-stacked plan-features"></div>
+                <i class="fa fa-dashboard feature-icon"></i>
+                Speed of interaction
+                <span class="pull-right badge bg-green">Full speed</span>
+                <hr />
+                <div class="nav nav-stacked plan-features"></div>
+                <i class="fa fa-map-marker feature-icon"></i>
+                Located Keywords
+                <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+                <hr />
+
+
+                <div class="nav nav-stacked plan-features"></div>
+                <i class="fa fa-warning feature-icon"></i>
+                Explicit Content Filter
+                <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+                <hr />
+
+                <div class="nav nav-stacked plan-features"></div>
+                <i class="fa fa-minus-circle feature-icon"></i>
+                Negative Keywords
+                <i class="fa fa-info-circle"></i>
+                <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+
+                <hr />
+                <div class="nav nav-stacked plan-features"></div>
+                <i class="fa fa-users feature-icon"></i>
+                Super Targeting
+                <i class="fa fa-info-circle"></i>
+                <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+
+            </div>
+            <hr />
+            @* <button type="button" class="btn btn-lg btn-success btn-block">Subscribe</button>*@
+            <button type="button" class="btn btn-lg btn-yellow btn-block center-block">Subscribe  </button>
+        </div>
+    </div>
+
+</div>

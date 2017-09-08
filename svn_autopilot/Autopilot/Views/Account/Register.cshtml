@@ -1,0 +1,115 @@
+﻿@model Autopilot.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900' rel='stylesheet' type='text/css'>
+
+<style>
+    .content {
+        margin-top: -15px;
+    }
+</style>
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+        <!-- Wrapper-->
+    <div class="wrapper">
+
+        <!-- Main content-->
+        <section class="content">
+
+            <div class="container-center lg animated slideInDown">
+
+                <div class="view-header">
+                    <div class="header-icon col-sm-offset-2">
+                        <i class="pe page-header-icon pe-7s-add-user"></i>
+                    </div>
+                    <div class="header-title">
+                        <h3>Register</h3>
+                        <small>
+                            Please enter your data to register.
+                        </small>
+                    </div>
+                </div>
+                <div class="panel panel-filled  col-sm-7">
+                    <div class="panel-body">
+                        <p>
+                        </p>
+
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+
+
+                                @*@if (ViewData.ModelState.IsValid)
+                                    {
+                                        if (@ViewBag.Name != null)
+                                        {
+                                            <b>
+                                                Email : @ViewBag.Email
+                                            </b>
+                                        }
+                                    }*@
+
+
+                                <label>Email</label>
+
+
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "example@gmail.com", required = "required" })
+                                <div style="color:red">
+                                    @Html.ValidationMessageFor(model => model.Email)
+                                </div>
+                                @*<input type="" value="" id="username" class="form-control" name="">*@
+                                <span class="help-block small">Your unique email to application</span>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label>Business Category</label>
+                                @*<input type="password" value="" id="password" class="form-control" name="">*@
+                                @Html.DropDownListFor(x => x.BusinessCategory, new SelectList(ViewBag.BusinessCategory, "Id", "Name"), "Select Business Category", new { @class = "form-control", required = "required" })
+                                <div style="color:red">
+                                    @Html.ValidationMessageFor(x => x.BusinessCategory)
+                                </div>
+                                
+                                 <span class="help-block small">Your business type</span>
+                            </div>
+
+
+                        </div>
+                        <div class="btn-margin ">
+                            <button class="btn btn-accent col-lg-12" type="submit">Register</button>
+
+                        </div>
+
+                        <div class="form-group ">
+                            <p>By clicking Register, you agree to our  <a href="@Url.Action("Privacy", "Home")">Privacy Policy</a> and <a href="@Url.Action("TermsOfServices", "Home")">Terms Of Use </a></p>
+                            @*<p>By clicking Register, you agree to our <a>Privacy policy</a> and <a>Terms of Use</a>.</p>*@
+                        </div>
+                        <div class="form-group ">
+                            <p>If you already have account, <a href="@Url.Action("Login", "Account")">Sign In</a></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End main content-->
+    </div>
+    <!-- End wrapper-->
+}
+
+@section script{
+    <script>
+        $(document).ready(function () {
+
+            if ('@ViewBag.Message' != "") {
+                toastr.warning('@ViewBag.Message');
+
+            }
+        })
+    </script>
+}
+

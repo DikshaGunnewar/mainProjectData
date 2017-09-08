@@ -1,0 +1,1233 @@
+﻿@model EntitiesLayer.ViewModel.SocialMediaVM
+@using ServiceLayer.EnumStore;
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@Model.UserName</h3>
+
+
+@*<h3>@Model</h3>*@
+@Html.AntiForgeryToken()
+<div class="panel panel-filled col-sm-12">
+    <div class="panel-heading">@ViewBag.Content</div>
+    <div class="panel-body">
+        <div class="row clearfix">
+            <div class="col-lg-1" style="width:45px">
+                @if (@Model.ProfilepicUrl == null)
+                {
+                    Model.ProfilepicUrl = "../Images/imagesplaceholder.jpeg";
+                }
+
+                <img src="@Model.ProfilepicUrl" style="width:45px" class="img-circle" />
+            </div>
+            <div class="col-lg-11 pull-right">
+                <h4>
+                    <i class="fa fa-spotify text-primary"></i> @Model.UserName<small class="text-primary">
+                        @if (Model.IsSubscribed == false && Model.IsTrail == true)
+                        { <span>free-trail</span>}
+                        else if (Model.IsSubscribed == true)
+                        {<span> @Model.planName-plan</span> }
+                </small>
+            </h4>
+                @if (Model.Status == false)
+                {
+                    <button class="btn btn-danger pull-right"><i class="fa fa-play"></i> Service Stopped</button>
+
+                }
+                else if (Model.Status == true)
+                {
+                    <button class="btn btn-success pull-right"><i class="fa fa-stop"></i> Service Running <i class="fa fa-spinner fa-spin"></i></button>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tabs-container">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"><i class="fa fa-cog"></i> Settings</a></li>
+        <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false"><i class="fa fa-line-chart "></i> Stats</a></li>
+        <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false"><i class="fa fa-key "></i> Access</a></li>
+        <li class=""><a data-toggle="tab" href="#tab-4" aria-expanded="false"><i class="fa fa-music "></i> Music Board</a></li>
+
+    </ul>
+    <div class="tab-content">
+        <div id="tab-1" class="tab-pane active">
+            <div class="panel-body">
+                <div class="panel panel-filled">
+                    <div class="panel-heading">
+                        <div class="panel-tools">
+                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        <h5><strong>Tags </strong> <small> These are the keywords used to look for tracks to interact with</small></h5>
+                    </div>
+                    <div class="panel-body">
+
+
+                        <div class="col-lg-12">
+                            <div id="TagList">
+
+                            </div>
+                            <div class="input-group m-b-xs m-t-xs">
+                                <input class="form-control" type="text" id="addTagInput" onkeyup="PressEnterBtn(event)" placeholder="Write one Tag here">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-w-md btn-accent addTagInputBtn" type="button" id="addTagInputBtn">Add Tag</button>
+                                    @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="col-lg-12">
+                            <div class="panel panel-filled panel-c-warning">
+                                <div class="panel-heading">
+                                    <div class="panel-tools">
+                                        <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                    </div>
+                                    <i class="fa fa-language"></i> Select allowed languages to interact with.
+                                </div>
+                                <div class="panel-body">
+                                    <select class="select2_language form-control" data-placeholder="Select Language" onchange="SetLanguagePreferences()" multiple="multiple" style="width: 100%">
+
+                                        @foreach (var item in ViewBag.Languages)
+                                        {
+                                            <option value="@item.Id">@item.Language</option>
+                                        }
+                                        
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>*@
+
+                    </div>
+                </div>
+                @*<input class="form-control" type="text" id="SearchUser" placeholder="Search By UserNames">*@
+                <!--Super Targeting-->
+                <div class="panel panel-filled">
+                    <div class="panel-heading">
+                        <div class="panel-tools">
+                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        <h5><strong>Super Targeting User</strong> <small>  Add any user/artist here to interact with the people who follow them </small></h5>
+                    </div>
+                    <div class="panel-body">
+
+
+                        <div class="col-lg-12">
+                            <div id="TargetUserList">
+
+                            </div>
+                            <div class="input-group m-b-xs m-t-xs col-lg-12">
+                                <input class="form-control" type="text" id="user-list" onkeyup="SearchUser(event)" placeholder="Search By User name">
+                                @*<div class="input-group-btn">
+                                        <button class="btn btn-w-md btn-accent" type="submit">Search Users </button>
+
+                                    </div>*@
+                            </div>
+
+                            <div class="SuperTargetResult col-lg-12">
+                                <ul class="user-list"></ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="input-group m-b-xs m-t-xs">
+                                <div class="input-group-btn">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--Targeting Playlist-->
+                <div class="panel panel-filled">
+                    <div class="panel-heading">
+                        <div class="panel-tools">
+                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        <h5><strong>Target Playlist </strong> <small>  Add any playlist here to to search track from a particular playlist.</small></h5>
+                    </div>
+                    <div class="panel-body">
+
+
+                        <div class="col-lg-12">
+                            <div id="PlaylistList">
+
+                            </div>
+                            <div class="input-group m-b-xs m-t-xs col-lg-12">
+                                <input class="form-control" type="text" id="play-list" onkeyup="SearchPlaylist(event)" placeholder="Search By User name">
+                                @*<div class="input-group-btn">
+                            <button class="btn btn-w-md btn-accent" type="submit">Search Users </button>
+
+                        </div>*@
+                            </div>
+
+                            <div class="SuperTargetResult col-lg-12">
+                                <ul class="play-list"></ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="input-group m-b-xs m-t-xs">
+                                <div class="input-group-btn">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--My Playlist-->
+                <div class="panel panel-filled">
+                    <div class="panel-heading">
+                        <div class="panel-tools">
+                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        <h5><strong>My Playlist </strong> <small>  List of current user's playlist.</small></h5>
+                    </div>
+                    <div class="panel-body">
+
+
+                        <div class="col-lg-12">
+                            <div id="UsersPlaylist">
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="input-group m-b-xs m-t-xs">
+                                <div class="input-group-btn">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--Blocked Tags-->
+                <div class="panel panel-filled">
+                    <div class="panel-heading">
+                        <div class="panel-tools">
+                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        <h5><strong>Blocked Tags </strong> <small> Any tag added here will prevent any interaction with any tweet/media containing them</small></h5>
+
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="col-lg-12">
+                            <div id="blockTagList">
+
+                            </div>
+                            <div class="input-group m-b-xs m-t-xs">
+                                <input class="form-control" id="blockTagInput" type="text" onkeyup="PressEnterBtn(event)" placeholder="Write One Keyword">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-w-md btn-accent" id="blockTagInputBtn" type="button">Block Tag </button>
+                                    @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="input-group m-b-xs m-t-xs">
+                                <div class="input-group-btn">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--Blocked Users-->
+                <div class="panel panel-filled">
+                    <div class="panel-heading">
+                        <div class="panel-tools">
+                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        <h5><strong>Blocked Users</strong> <small>  any users you do not want to interact with</small></h5>
+
+
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="col-lg-12">
+                            <div id="blockTargetUserList">
+
+                            </div>
+                            <div class="input-group m-b-xs m-t-xs col-lg-12">
+                                <input class="form-control" type="text" id="block-user-list" onkeyup="SearchUser(event)" placeholder="Search By User name">
+                                <div class="input-group-btn">
+                                    @*<button class="btn btn-w-md btn-accent" type="button">Search UserNames </button>*@
+                                    @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                                </div>
+                            </div>
+                            <div class="SuperTargetResult col-lg-12">
+                                <ul class="block-user-list"></ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="input-group m-b-xs m-t-xs">
+                                <div class="input-group-btn">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tab-2" class="tab-pane">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-9">
+                        @*stats column*@
+                        <div class="row">
+                            <div class="col-lg-4 box">
+                                <div class="text-inner">
+                                    <h2 id="todaysConversion">0</h2>
+                                    <p>Today conversions</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-user-plus"></i>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4 box">
+                                <div class="text-inner">
+                                    <h2 id="weekConversion">0</h2>
+                                    <p>Week conversions</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-users"></i>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4 box">
+                                <div class="text-inner">
+                                    <h2 id="totalConversion">0</h2>
+                                    <p>Total conversions</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-trophy"></i>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            @*chart row*@
+                            <div class="col-md-6">
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <div class="panel-tools">
+                                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            @*<a class="panel-close"><i class="fa fa-times"></i></a>*@
+                                        </div>
+                                        Last Week's Conversions
+                                    </div>
+                                    <div class="panel-body">
+                                        <div>
+                                            <canvas id="sharpLineOptions" height="180"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <div class="panel-tools">
+                                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            @*<a class="panel-close"><i class="fa fa-times"></i></a>*@
+                                        </div>
+                                        Last Week's Followers
+                                    </div>
+                                    <div class="panel-body">
+                                        <div>
+                                            <canvas id="sharpLineOptions2" height="140"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <div class="panel-tools">
+                                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            @*<a class="panel-close"><i class="fa fa-times"></i></a>*@
+                                        </div>
+                                        <span class="fa fa-users"></span> Latest Users Conversions
+                                    </div>
+                                    <div class="panel-body latestUserConversion">
+                                        <ul class="conversion-list"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <div class="panel-tools">
+                                            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            @*<a class="panel-close"><i class="fa fa-times"></i></a>*@
+                                        </div>
+                                        <span class="fa fa-tags"></span> Tags Performance
+                                    </div>
+                                    <div class="panel-body tagsPerformance">
+                                        <ul class="tags-chart"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="panel panel-filled  panel-c-accent-top">
+                            <div class="panel-heading">
+                                <i class="fa fa-circle-o-notch fa-spin"></i> Recent Activity
+                            </div>
+                            <div class="panel-body" id="recent-activity">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div id="tab-3" class="tab-pane">
+            <div class="panel-body">
+                    @Html.Action("UserManagement", "Users", new { socialId = Model.Id })
+            </div>
+        </div>
+
+        @*tab 4*@
+        <div id="tab-4" class="tab-pane">
+            <div class="panel-body">
+                @Html.Action("MusicBoard", "Spotify", new { socialId = Model.Id })
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@section script{
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsxWauyjblKzH_7ZvOGr-aehYWt06cB94&libraries=places&callback=initAutocomplete" async defer></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('.nav-tabs a[href="#tab-' +@ViewBag.tabIndex +'"]').tab('show');
+        @*if ('@ViewBag.tabIndex' == 1) {
+
+          } else if ('@ViewBag.tabIndex' == 2) {
+
+          } else if ('@ViewBag.tabIndex' == 3) {
+
+          }*@
+        LoadTags();
+        LoadTargetuser();
+        LoadTargetPlaylist();
+        LoadUsersPlaylist();
+        GetFollowersGrowth();
+        GetConversion();
+        LoadRecentActivity();
+        var selectedLanguages = '@Model.AccSettings.Language';
+              $(".select2_language").val(selectedLanguages.split(','));
+              $(".select2_language").select2();
+      });
+      var globalOptions = {
+          responsive: true,
+          legend: {
+              labels: {
+                  fontColor: "#90969D"
+              },
+
+          },
+          scales: {
+              xAxes: [{
+                  ticks: {
+                      fontColor: "#90969D",
+                      maxRotation: 60,
+                      minRotation: 30
+                  },
+                  gridLines: {
+                      color: "#37393F"
+                  },
+
+              }],
+              yAxes: [{
+                  ticks: {
+                      fontColor: "#90969D"
+                  },
+                  gridLines: {
+                      color: "#37393F"
+                  }
+              }]
+          }
+      };
+
+
+      function GetConversion() {
+
+          $.ajax({
+              type: "GET",
+              url: '/Users/GetConversionStats',
+              data: { socialId:'@Model.Id' },
+
+              success: function (response) {
+
+                  if (response.length > 0) {
+                      var label=[]; var dataSet=[];
+                      $.each(response, function (key, value) {
+                          label.push(value.label);
+                          dataSet.push(value.count);
+                      })
+                      debugger
+                      var newConversionLineData = {
+                          labels: label,
+                          datasets: [
+                              {
+                                  label: "Conversion Count",
+                                  backgroundColor: 'rgba(246,168,33, 0.1)',
+                                  borderColor: "#f6a821",
+                                  pointBorderWidth: 0,
+                                  pointRadius: 2,
+                                  pointBorderColor: '#f6a821',
+                                  borderWidth: 1,
+                                  data: dataSet,
+                                  lineTension: 0
+                              }
+                          ]
+                      };
+                      var c2 = document.getElementById("sharpLineOptions").getContext("2d");
+                      new Chart(c2, { type: 'line', data: newConversionLineData, options: globalOptions });
+                  }
+              }
+          });
+
+
+
+          $.ajax({
+              type: "GET",
+              url: '/Users/GetAllConversion',
+              data: { socialId: '@Model.Id' },
+
+              success: function (response) {
+                  debugger;
+
+                  $('.conversion-list').empty();
+
+                  $.each(response, function (key, item) {
+                      var url = "https://www.twitter.com/" + item.Username;
+                      var userConversionElement = '<li class="col-lg-2"><img src="' + item.ProfilePic + '" class="img-circle"><a href="' + url + '" class="users-list-name" target="_blank"><span class="userConverionName">' + item.Username + '</span></a><span><small>'+item.Tag+'</small> </span></li>';
+                      $('.conversion-list').append(userConversionElement);
+                  });
+
+              }
+          });
+          //Tag performance
+          $.ajax({
+              type: "GET",
+              url: '/Users/GetTagPerformance',
+              data: { socialId: '@Model.Id' },
+
+              success: function (response) {
+                  $('.tags-chart').empty();
+                  var limit = 10;
+                  $.each(response, function (key, item) {
+                      if (item.count > 10) {
+                          limit = 100;
+                      }
+                  });
+                  $.each(response, function (key, item) {
+                      var tagPercent = (parseFloat(item.count) * 100) / limit;
+                      var width = "";
+                      var progressBar = "";
+
+                      if (tagPercent > 0) { width = 'style = "width: ' + tagPercent + '%"'; progressBar = '<div ' + width + ' aria-valuemax="' + limit + '" aria-valuemin="0" aria-valuenow="' + item.count + '" role="progressbar" class=" progress-bar progress-bar-warning"></div>'; }
+                      var element = '<p>'+item.label+'</p><div class="progress m-t-xs full progress-small">'+progressBar+'</div>';
+                      $('.tags-chart').append(element);
+                  });
+
+
+                  //$('.conversion-list').empty();
+                  //$('.tags-chart').empty();
+                  //$.each(response, function (key, item) {
+                  //    var url = "https://www.twitter.com/" + item.Username;
+                  //    var userConversionElement = '<li class="col-lg-2"><img src="' + item.ProfilePic + '" class="img-circle"><a href="' + url + '" class="users-list-name" target="_blank"><span class="userConverionName">' + item.Username + '</span></a><span><small>' + item.Tag + '</small> </span></li>';
+                  //    $('.conversion-list').append(userConversionElement);
+                  //});
+
+              }
+          });
+
+
+
+      }//function GetConversion end
+
+    function GetFollowersGrowth() {
+
+        $.ajax({
+            type: "GET",
+            url: '/Users/GetFollowersGrowth',
+            data: { socialId: '@Model.Id' },
+
+            success: function (response) {
+
+                if (response.length > 0) {
+                    var label = []; var dataSet = [];
+                    $.each(response, function (key, value) {
+                        label.push(value.label);
+                        dataSet.push(value.count);
+                    })
+                    debugger
+                    var newConversionLineData = {
+                        labels: label,
+                        datasets: [
+                            {
+                                label: "Followers Count",
+                                backgroundColor: 'rgba(246,168,33, 0.1)',
+                                borderColor: "#f6a821",
+                                pointBorderWidth: 0,
+                                pointRadius: 2,
+                                pointBorderColor: '#f6a821',
+                                borderWidth: 1,
+                                data: dataSet,
+                                lineTension: 0
+                            }
+                        ]
+                    };
+                    var c3 = document.getElementById("sharpLineOptions2").getContext("2d");
+                    new Chart(c3, { type: 'line', data: newConversionLineData, options: globalOptions });
+                }
+            }
+        });
+
+    }
+
+    function LoadRecentActivity() {
+
+        var SocailId = '@Model.Id';
+        $.ajax({
+            type: "GET",
+            url: '/Spotify/GetRecentActivities',
+            data: { socialId: SocailId ,offset:0},
+            success: function (response) {
+                debugger;
+                $('#recent-activity').empty();
+                if (response.status != false && response.result.length > 0) {
+                    $.each(response.result, function (key, item) {
+                        var activityIcon;
+                        debugger;
+                        var stillUtc = moment.utc(item.ActivityDate).format('YYYY-MM-DD HH:mm:ss');
+                        var local = moment(item.ActivityDate).local().local().format('YYYY-MM-DD HH:mm:ss');
+                        var since = moment(item.ActivityDate).fromNow();
+                        var imageUrl = item.ProfilePic != "" ? item.ProfilePic : "../../images/imagesplaceholder.jpeg";
+                        if (item.Activity == '@Activity.Follow.ToString()') { activityIcon = '<i class="fa fa-user-plus"> Follow</i>'; }
+                        //else if (item.Activity == '@Activity.Comment.ToString()') { activityIcon = '<i class="fa fa-comment-o"></i>'; }
+                        var element = '<div class="panel"><div class=""><img src="' + imageUrl + '" class="img-circle" style="width:20px"> ' + item.Content + ' <p class="pull-right">' + since + '</p></div><i class="fa fa-spotify text-primary pull-left"></i> ' + activityIcon + ' <p class="pull-right">' + item.Tag + '</p></div></div></div>'
+                        $('#recent-activity').append(element);
+                    })//each end
+                } else {
+                    $('#recent-activity').append('<div>No Recent Activities</div>')
+                }
+            }
+        });
+
+
+    }//function to load recent activities
+
+      function GetConversionCount() {
+          $.ajax({
+              type: "GET",
+              url: '/Users/GetConversionCount',
+              data: { socialId: '@Model.Id' },
+
+              success: function (response) {
+
+                  $("#todaysConversion").text(response.todayConversion);
+
+                  $("#weekConversion").text(response.weekConversion);
+
+                  $("#totalConversion").text(response.totalConversion);
+              }
+          });
+      }//function GetConversioncount end
+          function Scheduler() {
+              $.ajax({
+                  type: "POST",
+                  url: '/Users/Scheduler',
+                  success: function (response) {
+                      GetConversion();
+                      LoadRecentActivity();
+                      toastr.success("Success");
+                  }
+              });
+          }//function Scheduler end
+
+            //On enter click add location
+          function EnterLocation(event) {
+              if (event.keyCode == 13) {
+
+                  AddLocation();
+
+              }
+          }
+      //On enter click add location function end
+
+      // function to add location in tag
+          function AddLocation() {
+
+              $.ajax({
+                  type: "GET",
+                  url: '/Spotify/AddLocation',
+                  data: { tagId: $('#locationTagId').val(), location: $('#locationautocomplete').val() },
+                  success: function (response) {
+                      if (response.status == true) {
+                          LoadTags();
+                          toastr.success("Success");
+                      }
+                      else {
+                          toastr.error("Something went wrong");
+                      }
+                      $('#locationModal').modal('hide');
+                  }
+              });
+
+          }
+      //end function to add location in tag
+
+          // function to add location in tag
+          function RemoveLocation() {
+              $.ajax({
+                  type: "GET",
+                  url: '/Spotify/RemoveLocation',
+                  data: { tagId: $('#locationTagId').val() },
+                  success: function (response) {
+                      if (response.status == true) {
+                          LoadTags();
+                          toastr.success("Success");
+                      }
+                      else {
+                          toastr.error("Something went wrong");
+                      }
+                      $('#locationModal').modal('hide');
+                  }
+              });
+
+          }
+
+          //end function to add location in tag
+          var targetUserStack = [];
+          var targetPlaylistStack = [];
+
+          function LoadUsersPlaylist() {
+              var SocailId = '@Model.Id';
+        $.ajax({
+            type: "GET",
+            url: '/Spotify/GetUsersPlaylists',
+            data: { socialId: SocailId },
+
+            success: function (response) {
+
+                $('#UsersPlaylist').empty();
+                $.each(response.items, function (key, item) {
+                    debugger;
+                    // var locationElement;
+                    //if (item.Location == null) { locationElement = '<a class="dropdown-item addLocationBtn" title="' + item.TagName + '" name="' + item.Location + '" id="' + item.Id + '" data>  <i class="fa fa-map-marker" ></i> Add Location</a>'; }
+                    //else { locationElement = '<a class="dropdown-item addLocationBtn" title="' + item.TagName + '" name="' + item.Location + '" id="' + item.Id + '" data>  <i class="fa fa-map-marker" ></i> ' + item.Location + '</a>'; }
+                    var element = '<div class="btn-group"><a type="button" class="btn btn-primary" onclick="" aria-haspopup="true" id="' + item.id + '" aria-expanded="false"><span class="pe-7s-musiclist"></span>' + item.name + '</a></div>';
+                    $('#UsersPlaylist').append(element);
+
+                });
+                dynamicBtnBind();
+            }
+        });
+
+    } //function LoadTargetPlaylist  end
+
+    //function to load all added tags
+    function LoadTags() {
+        var SocailId = '@Model.Id';
+        $.ajax({
+            type: "POST",
+            url: '/Users/GetTags',
+            data: { socialId: SocailId },
+
+            success: function (response) {
+                $('#blockTagList').empty();
+                $('#TagList').empty();
+                $.each(response, function (key, item) {
+                    if (item.IsBlocked == false) {
+                        var locationElement;
+                        if (item.Location == null) { locationElement = '<a class="dropdown-item addLocationBtn" title="' + item.TagName + '" name="' + item.Location + '" id="' + item.Id + '" data>  <i class="fa fa-map-marker" ></i> Add Location</a>'; }
+                        else { locationElement = '<a class="dropdown-item addLocationBtn" title="' + item.TagName + '" name="' + item.Location + '" id="' + item.Id + '" data>  <i class="fa fa-map-marker" ></i> ' + item.Location + '</a>'; }
+                        var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#' + item.TagName + ' <span class="caret"></span></a>' +
+                                            '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                            '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a>' + locationElement + '</div></div>';
+                        $('#TagList').append(element);
+                    }
+                    else if (item.IsBlocked == true) {
+                        var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#' + item.TagName + ' <span class="caret"></span></a>' +
+                                       '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                       '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                        $('#blockTagList').append(element);
+                    }
+                });
+                dynamicBtnBind();
+            }
+        });
+
+    } //function LoadTags  end
+
+    function LoadTargetPlaylist() {
+        var SocailId = '@Model.Id';
+        $.ajax({
+            type: "POST",
+            url: '/Spotify/GetTargetPlaylists',
+            data: { socialId: SocailId },
+
+            success: function (response) {
+
+                $('#PlaylistList').empty();
+                $.each(response, function (key, item) {
+
+                    // var locationElement;
+                    //if (item.Location == null) { locationElement = '<a class="dropdown-item addLocationBtn" title="' + item.TagName + '" name="' + item.Location + '" id="' + item.Id + '" data>  <i class="fa fa-map-marker" ></i> Add Location</a>'; }
+                    //else { locationElement = '<a class="dropdown-item addLocationBtn" title="' + item.TagName + '" name="' + item.Location + '" id="' + item.Id + '" data>  <i class="fa fa-map-marker" ></i> ' + item.Location + '</a>'; }
+                    var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="pe-7s-musiclist"></span>' + item.Name + ' <span class="caret"></span></a>' +
+                                            '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                            '<a class="dropdown-item removePlaylistBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Playlist</a></div></div>';
+                    $('#PlaylistList').append(element);
+
+                });
+                dynamicBtnBind();
+            }
+        });
+
+    } //function LoadTargetPlaylist  end
+
+
+
+    //function to load all Targetuser
+    function LoadTargetuser() {
+        var SocailId = '@Model.Id';
+        $.ajax({
+            type: "POST",
+            url: '/Spotify/GetAllTargetUsers',
+            data: { socialId: SocailId },
+
+            success: function (response) {
+                $('#blockTargetUserList').empty();
+                $('#TargetUserList').empty();
+                $.each(response, function (key, item) {
+                    if (item.IsBlocked == false) {
+                        var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.UserName + ' <span class="caret"></span></a>' +
+                                            '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                            '<a class="dropdown-item removeTargetUserBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Artist</a><div class="dropdown-divider"></div><a class="dropdown-item " id="' + item.Id + '">  <i class="fa fa-users" ></i>' + item.Followers + ' Followers</a></div></div>';
+                        $('#TargetUserList').append(element);
+                    }
+                    else if (item.IsBlocked == true) {
+                        var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.UserName + ' <span class="caret"></span></a>' +
+                                       '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                       '<a class="dropdown-item removeTargetUserBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Artist</a><div class="dropdown-divider"></div><a class="dropdown-item " id="' + item.Id + '">  <i class="fa fa-users" ></i>' + item.Followers + ' Followers</a></div></div>';
+                        $('#blockTargetUserList').append(element);
+                    }
+                });
+                dynamicBtnBind();
+            }
+        });
+    } //function LoadTargetuser end
+
+    //SetLanguagePreferences function
+    function SetLanguagePreferences() {
+        debugger;
+        var languageId = $('.select2_language').val();
+        $.ajax({
+            type: "POST",
+            url: '/Users/UpdateLanguages',
+            data: { languageIds: languageId.join(), socialId: '@Model.Id' },
+            success: function (response) {
+                // alert to the user for request send successfull
+                if (response.status == false) {
+                    toastr.error("Unable to add tag.");
+                }
+            }
+        });
+
+    }
+
+    //add tag btn click event
+    // $('#addTagInputBtn').on('click', function () {
+
+    $(document).ready(function () {
+        $('#addTagInputBtn').on('click', function () {
+
+            var Tag = $('#addTagInput').val();
+            var SocailId = '@Model.Id';
+            $.ajax({
+                type: "POST",
+                url: '/Users/AddBlockTags',
+                data: { tag: Tag, socialId: SocailId, IsBlocked: false },
+
+                success: function (response) {
+                    // alert to the user for request send successfull
+                    if (response.status == true) {
+                        $('#TagList').empty();
+                        $.each(response.tagList, function (key, item) {
+                            if (item.IsBlocked == false) {
+                                // var element = "<button class='btn btn-primary'>" + item.TagName + "</button>"
+                                var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#' + item.TagName + ' <span class="caret"></span></a>' +
+                                                   '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                                  '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a><a class="dropdown-item addLocationBtn" name="' + item.Location + '" id="' + item.Id + '">  <i class="fa fa-map-marker" ></i> Add Location</a></div></div>';
+                                $('#TagList').append(element);
+                            }
+                        })
+                        dynamicBtnBind();
+                        $('#addTagInput').val('');
+                        toastr.success("Successfully tag added.");
+                    }
+                    else {
+                        toastr.error("You cannot add this tag.");
+                    }
+                }
+            });
+        });
+        //block tag btn event
+        $('#blockTagInputBtn').on('click', function () {
+
+            var Tag = $('#blockTagInput').val();
+            var SocailId = '@Model.Id';
+
+            $.ajax({
+                type: "POST",
+                url: '/Users/AddBlockTags',
+                data: { tag: Tag, socialId: SocailId, IsBlocked: true },
+
+                success: function (response) {
+
+                    // alert to the user for request send successfull
+                    if (response.status == true) {
+                        $('#blockTagList').empty();
+                        $.each(response.tagList, function (key, item) {
+                            if (item.IsBlocked == true) {
+                                //var element = "<button class='btn btn-primary'>" + item.TagName + "</button>"
+                                var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#' + item.TagName + ' <span class="caret"></span></a>' +
+                                    '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                    '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                                $('#blockTagList').append(element);
+                            }
+                        })
+                        dynamicBtnBind();
+                        $('#blockTagInput').val('');
+                        toastr.success("Successfully negative tag added.");
+                    }
+                    else {
+                        toastr.error("Unable to add negative tag.");
+                    }
+
+                }
+            });
+        });
+    })
+
+    //submit form when click on enter
+    function PressEnterBtn(event) {
+
+        if (event.keyCode == 13) {
+
+            $('#' + event.target.id + 'Btn').click();
+
+        }
+    }
+    //search username on the basis of user's query
+
+    function SearchUser(event) {
+        if (event.keyCode == 13) {
+
+            $.ajax({
+                type: "GET",
+                url: '/Spotify/Search',
+                data: { query: event.target.value, socialId: '@Model.Id', type: '@SpotifySearchType.artist.ToString()' },
+
+                success: function (response) {
+                    //$('.resetSearchDiv').remove();
+                    targetUserStack = [];
+                    var placeholder; var btn;
+                    if (event.target.id == "user-list") { placeholder = $('.user-list'); btn = "addTargetUser"; }
+                    if (event.target.id == "block-user-list") { placeholder = $('.block-user-list'); btn = "addBlockTargetUser"; }
+                    placeholder.empty();
+                    $.each(response.items, function (key, item) {
+                        debugger;
+                        targetUserStack.push({ UserName: item.name, UserId: item.id, Follower: item.followers.total })
+                        var url = "https://open.spotify.com/artist/" + item.id;
+                        var imageUrl = item.images.length > 0 ? item.images[0].url : "../../images/imagesplaceholder.jpeg";
+                        var element = '<li class="col-lg-2"><a href="' + url + '" target="_blank"><img src="' + imageUrl + '" class="img-circle" style="width:45px"></a><a href="' + url + '" class="users-list-name" target="_blank"><span class="targetUserFollowers">' + item.followers.total + ' followers</span></a><button class="btn btn-default btn-sm ' + btn + '" id="' + item.id + '"><i class="fa fa-user-plus"></i> ' + item.name + '</button></li>';
+                        placeholder.append(element);
+                    });
+                    placeholder.parent().after('<div class="resetSearchDiv"><a class="resetSearch" name="' + event.target.id + '"><i class="fa fa-remove"></i> Reset Search</a></div>')
+                    dynamicBtnBind();
+                }
+            });
+        }
+    };
+
+    //search playlist on the basis of user's query
+
+    function SearchPlaylist(event) {
+        if (event.keyCode == 13) {
+
+            $.ajax({
+                type: "GET",
+                url: '/Spotify/Search',
+                data: { query: event.target.value, socialId: '@Model.Id', type: '@SpotifySearchType.playlist' },
+
+                success: function (response) {
+                    console.log(response)
+                    //$('.resetSearchDiv').remove();
+                    targetPlaylistStack = [];
+                    var placeholder; var btn;
+                    if (event.target.id == "play-list") { placeholder = $('.play-list'); btn = "addTargetPlaylist"; }
+                    // if (event.target.id == "block-user-list") { placeholder = $('.block-user-list'); btn = "addBlockTargetUser"; }
+                    placeholder.empty();
+                    $.each(response.items, function (key, item) {
+                        debugger;
+                        targetPlaylistStack.push({ OwnerId: item.owner.id, Id: item.id, Name: item.name, Tracks: item.tracks.total })
+                        var url = item.external_urls.spotify;
+                        var imageUrl = item.images.length > 0 ? item.images[0].url : "../../images/imagesplaceholder.jpeg";
+                        var element = '<li class="col-lg-3"><a href="' + url + '" target="_blank"><img src="' + imageUrl + '" class="img-circle" style="width:45px"></a><a href="' + url + '" class="users-list-name" target="_blank"><span class="targetUserFollowers">' + item.tracks.total + ' tracks</span></a><button class="btn btn-default btn-sm ' + btn + '" id="' + item.id + '"><i class="fa fa-user-plus"></i> ' + item.name + '</button></li>';
+                        placeholder.append(element);
+                    });
+                    placeholder.parent().after('<div class="resetSearchDiv"><a class="resetSearch" name="' + event.target.id + '"><i class="fa fa-remove"></i> Reset Search</a></div>')
+                    dynamicBtnBind();
+                }
+            });
+        }
+    };
+    //adding event to dynamic remove tag btn
+    function dynamicBtnBind() {
+        //add location on click
+
+        $('.addLocationBtn').on('click', function (e) {
+            $('#locationautocomplete').val(e.target.name == 'null' ? '' : e.target.name);
+            $('#locationTagId').val(e.target.id);
+            if (e.target.name == 'null') { $('#removeLocationBtn').hide(); } else { $('#removeLocationBtn').show(); }
+            $('#tag-placeholder').text(e.target.title);
+            $('#locationModal').modal('show');
+        });
+        //reset search btn click function
+        $('.resetSearch').on('click', function (e) {
+            debugger
+            $('.' + e.target.name).empty();
+            $('#' + e.target.name).val('');
+            $('.resetSearchDiv').remove();
+
+        })
+
+        //removeTargetUserBtn
+        $('.removePlaylistBtn').on('click', function (e) {
+            $.ajax({
+                type: "GET",
+                url: '/Spotify/RemovePlaylist',
+                data: { TargetPlaylistId: e.target.id },
+
+                success: function (response) {
+
+                    if (response.status == true) {
+                        LoadTargetPlaylist();
+                        toastr.success("Successfully removed playlist.");
+                    }
+                    else {
+                        toastr.error("Unable to remove playlist.");
+                    }
+                }
+            });
+        })  //remove tag btn  end
+
+        //removeTargetUserBtn
+        $('.removeTargetUserBtn').on('click', function (e) {
+            $.ajax({
+                type: "POST",
+                url: '/Spotify/RemoveTargetUser',
+                data: { TargetUserId: e.target.id },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTargetuser();
+                        toastr.success("Successfully removed tag.");
+                    }
+                    else {
+                        toastr.error("Unable to remove tag.");
+                    }
+                }
+            });
+        })  //remove tag btn  end
+
+        //remove tag btn
+        $('.removeTagBtn').on('click', function (e) {
+            $.ajax({
+                type: "POST",
+                url: '/Users/RemoveTag',
+                data: { tagId: e.target.id },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTags();
+                        toastr.success("Successfully removed tag.");
+                    }
+                    else {
+                        toastr.error("Unable to remove tag.");
+                    }
+                }
+            });
+        })  //remove tag btn  end
+        //add target user btn
+        $('.addTargetUser').on('click', function (e) {
+            AddBlockTargetUserCall(false, e.target.id)
+        });
+        //add block target user btn
+        $('.addBlockTargetUser').on('click', function (e) {
+            AddBlockTargetUserCall(true, e.target.id)
+        });
+
+
+        function AddBlockTargetUserCall(isBlocked, userid) {
+            var DataObject = {};
+            $.each(targetUserStack, function (key, item) {
+
+                DataObject.SocailId = '@Model.Id';
+                if (item.UserId == userid) {
+                    DataObject.UserName = item.UserName;
+                    DataObject.SMId = item.UserId;
+                    DataObject.Followers = item.Follower;
+                    DataObject.IsBlocked = isBlocked;
+                }
+            });
+            //ajax call to add target user
+            $.ajax({
+                type: "POST",
+                url: '/Spotify/AddBlockSuperTargetUser',
+                data: { user: DataObject },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTargetuser();
+                        $('.user-list').empty();
+                        $('.block-user-list').empty();
+                        $('.resetSearchDiv').remove();
+                        toastr.success("Success.");
+                    }
+                    else {
+                        toastr.error("You cannot add this user.");
+                    }
+                }
+            });
+        }// end AddBlockTargetUserCall function
+
+        //add block target user btn
+        $('.addTargetPlaylist').on('click', function (e) {
+            AddTargetPlaylist(e.target.id)
+        });
+
+
+        function AddTargetPlaylist(userid) {
+            var DataObject = {};
+            $.each(targetPlaylistStack, function (key, item) {
+
+                DataObject.SocailId = '@Model.Id';
+                if (item.Id == userid) {
+                    DataObject.OwnerId = item.OwnerId;
+                    DataObject.PlaylistId = item.Id;
+                    DataObject.Name = item.Name;
+                    DataObject.TracksCount = item.Tracks;
+                }
+            });
+            debugger;
+            //ajax call to add target user
+            $.ajax({
+                type: "POST",
+                url: '/Spotify/AddTargetPlaylist',
+                data: { playlist: DataObject },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTargetPlaylist();
+                        $('.play-list').empty();
+                        $('.resetSearchDiv').remove();
+                        toastr.success("Success.");
+                    }
+                    else {
+                        toastr.error("You cannot add this playlist.");
+                    }
+                }
+            });
+        }// end AddBlockTargetUserCall function
+
+
+    } //dynamicBtnBind function end
+
+
+    //google location api
+    var placeSearch, locationautocomplete;
+    var componentForm = {
+        street_number: 'short_name',
+        route: 'long_name',
+        locality: 'long_name',
+        administrative_area_level_1: 'short_name',
+        country: 'long_name',
+        postal_code: 'short_name'
+    };
+    function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        locationautocomplete = new google.maps.places.Autocomplete(
+          (document.getElementById('locationautocomplete')),
+            { types: ['geocode'] });
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        locationautocomplete.addListener('place_changed', function () {
+            $('#locationautocomplete').val(locationautocomplete.getPlace().formatted_address);
+            $('#locationautocomplete').trigger('input');
+        });
+        //$('#locationautocomplete').val() = $('#locationautocomplete').geolocate();
+    }
+
+    function geolocate() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var geolocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                var circle = new google.maps.Circle({
+                    center: geolocation,
+                    radius: position.coords.accuracy
+                });
+                locationautocomplete.setBounds(circle.getBounds());
+            });
+        }
+    }
+</script>  
+}
+    

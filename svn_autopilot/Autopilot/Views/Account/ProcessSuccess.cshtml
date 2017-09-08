@@ -1,0 +1,43 @@
+﻿@model Autopilot.Models.SendMailViewModel
+
+@{
+    //if (User.Identity.IsAuthenticated != true)
+    //{
+
+        Layout = "~/Views/Shared/_MainLayout.cshtml";
+
+    @*}
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }*@
+}
+
+@using (Html.BeginForm())
+{
+    
+                    <div class="panel panel-filled col-sm-10">
+                        <div class="panel-heading">@ViewBag.Content</div>
+                        <div class="panel-body">
+                            If you didn't recieve any mail, Click the button below to <strong>Resend activation email.</strong>
+                            
+                        </div>
+                        <div class="panel-footer"><button class="btn btn-accent" type="submit">Resend activation email</button> </div>
+                    </div>
+    
+    
+    
+   
+}
+
+@section script
+{
+    <script>
+    $(document).ready(function () {
+        if ('@ViewBag.Message' != "") {
+            toastr.warning('@ViewBag.Message');
+
+        }
+    });
+    </script>
+}

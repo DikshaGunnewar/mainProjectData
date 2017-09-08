@@ -1,0 +1,89 @@
+﻿
+
+<h2>Checkout</h2>
+<div class="row">
+
+    @*@if (@Model.FilterSubscribe.c)
+        {
+
+              foreach (var item in Model.subscribe)
+            {*@
+
+    <div class="panel panel-filled col-sm-12">
+        <div class="panel-heading"><i class="fa fa-paypal"></i> Payment Method </div>
+        <div class="panel-body">
+            <div>
+                <div class="col-sm-12 nav nav-stacked plan-features">
+                    Plan - <span class="text-center text-accent"><b>@Model.Title -  @ViewBag.accounts.Count accounts</b> </span>
+                    <h4 class="text-accent pull-right"><b>@((@Model.Price * @ViewBag.accounts.Count).ToString("c")) /Month</b></h4>
+                </div>
+                <hr />
+            </div>
+            <div>
+                <div class="col-sm-12 nav nav-stacked plan-features">
+                        @foreach (var item in ViewBag.accounts)
+                        {
+                            <div class="col-lg-2">
+                                <div class="panel panel panel-filled panel-b-accent ">
+                                  
+                                    <div class="panel-body">
+                                        <div class="img-rounded image-lg" style="top:5px">
+
+                                            @if (@item.ProfilepicUrl == null)
+                                            {
+                                                item.ProfilepicUrl = "../Images/imagesplaceholder.jpeg";
+                                            }
+                                            <img src="@item.ProfilepicUrl" class="img-circle" style="height:45px" />
+                                        </div>
+                                        <div class="m-b-none">
+                                            <h6>@item.UserName</h6>
+
+                                            @if (item.Provider == ServiceLayer.EnumStore.SocialMediaProviders.Twitter.ToString())
+                                            {
+                                                <span><i class="fa fa-twitter fa-2x"></i></span>
+                                            }
+                                            else if (item.Provider == ServiceLayer.EnumStore.SocialMediaProviders.Pinterest.ToString())
+                                            {
+                                                <span><i class="fa fa-pinterest fa-2x"></i></span>
+                                            }
+                                            else if (item.Provider == ServiceLayer.EnumStore.SocialMediaProviders.LinkedIn.ToString())
+                                            {
+                                                <span><i class="fa fa-linkedin fa-2x"></i></span>
+                                            }
+                                            else if (item.Provider == ServiceLayer.EnumStore.SocialMediaProviders.Instagram.ToString())
+                                            {
+                                                <span><i class="fa fa-instagram fa-2x"></i></span>
+                                            }
+                                            else if (item.Provider == ServiceLayer.EnumStore.SocialMediaProviders.Spotify.ToString())
+                                            {
+                                                <span><i class="fa fa-spotify fa-2x"></i></span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    <hr />
+                </div>
+                <hr />
+            </div>
+            <div class="nav nav-stacked plan-features col-sm-12">
+                Payment:
+
+                <div class="panel panel-filled">
+                    <div class="panel-heading">
+                        <div class="panel-body">
+                            @*onclick="location.href='@Url.Action("PaymentWithPaypal", "Payment", new { paymentDetails = new { PlanDetails = @Model, socialIds = @ViewBag.socialIds } })'"*@
+                            @*     @using (Html.BeginForm("PaymentProceed", "Payment", FormMethod.Get, new { planId = @Model.Id, socialIds = @ViewBag.socialIds }))*@
+
+                            <button type="submit" class="btn btn-lg btn-block center-block" onclick="location.href='@Url.Action("PaymentWithPaypal", "Payment", new { @planId = @Model.Id, @socialIds = @ViewBag.socialIds })'"><img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_200x51.png" style="width:150px;padding-right:30px" alt="PayPal"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*}
+        }*@
+
+</div>

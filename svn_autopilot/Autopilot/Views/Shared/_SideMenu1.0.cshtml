@@ -1,0 +1,154 @@
+﻿@model IEnumerable<EntitiesLayer.ViewModel.SocialMediaVM>
+@using ServiceLayer.EnumStore;
+<ul class="nav luna-nav">
+    <li class="nav-category">
+        Main
+    </li>
+    <li class="active">
+        <a href='@Url.Action("Dashboard", "Users")'>Dashboard</a>
+    </li>
+    <li>
+        <a href="#monitoring" data-toggle="collapse" aria-expanded="false">
+            Twitter<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+        </a>
+        <ul id="monitoring" class="nav nav-second collapse">
+            @if (Model.Count() > 0)
+            {
+                foreach (var item in Model)
+                {
+                    if (item.Provider == SocialMediaProviders.Twitter.ToString())
+                    {
+                        <li><a onclick="location.href='@Url.Action("Settings", "Twitter", new { socialId = @item.Id, tab = 1 })'"><img src="@item.ProfilepicUrl" class="img-circle" width="25px;" /> @item.UserName</a></li>
+                    }
+                }
+            }
+            <li><a onclick="location.href='@Url.Action("TwitterAuth", "Twitter" )'"> Add Account</a></li>
+
+        </ul>
+    </li>
+
+    <li>
+        <a href="#uielements" data-toggle="collapse" aria-expanded="false">
+            Instagram<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+        </a>
+        <ul id="uielements" class="nav nav-second collapse">
+            @if (Model.Count() > 0)
+            {
+                foreach (var item in Model)
+                {
+                    if (item.Provider == SocialMediaProviders.Instagram.ToString())
+                    {
+                        <li><a onclick="location.href='@Url.Action("Settings", "Instagram", new { socialId = @item.Id, tab = 1 })'"><img src="@item.ProfilepicUrl" class="img-circle" width="25px;" /> @item.UserName</a></li>
+                    }
+                }
+            }
+            <li><a onclick="location.href='@Url.Action("InstaAuth", "Instagram")'">Add Account</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#pinterest" data-toggle="collapse" aria-expanded="false">
+            Pinterest<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+        </a>
+        <ul id="pinterest" class="nav nav-second collapse">
+            @if (Model.Count() > 0)
+            {
+                foreach (var item in Model)
+                {
+                    if (item.Provider == SocialMediaProviders.Pinterest.ToString())
+                    {
+                        <li><a onclick="location.href='@Url.Action("Settings", "Pinterest", new { socialId = @item.Id, tab = 1 })'"><img src="@item.ProfilepicUrl" class="img-circle" width="25px;" /> @item.UserName</a></li>
+                    }
+                }
+            }
+            <li><a onclick="location.href='@Url.Action("PinterestAuth", "Pinterest")'"> Add Account</a></li>
+
+        </ul>
+    </li>
+    <li>
+        <a href="#linkedin" data-toggle="collapse" aria-expanded="false">
+            LinkedIn<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+        </a>
+        <ul id="linkedin" class="nav nav-second collapse">
+            @if (Model.Count() > 0)
+            {
+                foreach (var item in Model)
+                {
+                    if (item.Provider == SocialMediaProviders.LinkedIn.ToString())
+                    {
+                        <li><a onclick="location.href='@Url.Action("Settings", "LinkedIn", new { socialId = @item.Id, tab = 1 })'"><img src="@item.ProfilepicUrl" class="img-circle" width="25px;" /> @item.UserName</a></li>
+                    }
+                }
+            }
+            <li><a onclick="location.href='@Url.Action("LinkedInAuth", "LinkedIn")'"> Add Account</a></li>
+        </ul>
+    </li>
+
+    <li>
+        <a href="#forms" data-toggle="collapse" aria-expanded="false">
+            SoundCloud<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+        </a>
+        <ul id="forms" class="nav nav-second collapse">
+            <li><a href="formElements.html"> Add Account </a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#charts" data-toggle="collapse" aria-expanded="false">
+            Spotify<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+        </a>
+        <ul id="charts" class="nav nav-second collapse">
+            @if (Model.Count() > 0)
+            {
+                foreach (var item in Model)
+                {
+                    if (item.Provider == SocialMediaProviders.Spotify.ToString())
+                    {
+                        <li><a onclick="location.href='@Url.Action("Settings", "Spotify", new { socialId = @item.Id, tab = 1 })'"><img src="@item.ProfilepicUrl" class="img-circle" width="25px;" /> @item.UserName</a></li>
+                    }
+                }
+            }
+            <li><a onclick="location.href='@Url.Action("SpotifyAuth", "Spotify")'">Add Account</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#extras" data-toggle="collapse" aria-expanded="false">
+            Deezer <span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+        </a>
+        <ul id="extras" class="nav nav-second collapse">
+            <li><a href="profile.html">Add Account</a></li>
+
+<<<<<<< .mine
+        </ul>
+    </li>
+    <li>
+        @*<a href="#common" data-toggle="collapse" aria-expanded="false">*@
+=======
+                </ul>
+            </li>
+            <li>
+                <a onclick="location.href='@Url.Action("UserSubscription", "Users")'" data-toggle="collapse" aria-expanded="false">
+                    Upgrade Your Acount <span class="sub-nav-icon"> </span>
+                </a>
+            </li>
+            <li>
+                <a href="versions.html">
+                    <span class="badge pull-right">1.0</span>
+                    Versions
+                </a>
+            </li>
+>>>>>>> .r322
+
+        <a href="#common" onclick="location.href='@Url.Action("UserSubscription", "Users")'" data-toggle="collapse" aria-expanded="false">
+            Upgrade Your Acount <span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+        </a>
+        @*<a onclick="location.href='@Url.Action("Subscription", "Subscription")'"> Upgrade Your Acount</a>*@
+
+
+    </li>
+    <li>
+        <a href="versions.html">
+            <span class="badge pull-right">1.0</span>
+            Versions
+        </a>
+    </li>
+
+</ul>

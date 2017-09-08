@@ -1,0 +1,532 @@
+﻿@model EntitiesLayer.ViewModel.SocialMediaVM
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@Model.UserName</h3>
+
+
+    @*<h3>@Model</h3>*@
+    @Html.AntiForgeryToken()
+    <div class="panel panel-filled col-sm-12">
+        <div class="panel-heading">@ViewBag.Content</div>
+        <div class="panel-body">
+            <div class="row clearfix">
+                <div class="col-lg-1 " >
+                    @if (@Model.ProfilepicUrl == null)
+                    {
+                        Model.ProfilepicUrl = "../Images/imagesplaceholder.jpeg";
+                    }
+
+                    <img src="@Model.ProfilepicUrl" style="width:45px" class="img-circle" />
+                </div>
+                <div class="col-lg-11 pull-right">
+                    <h4>
+                        <i class="fa fa-linkedin text-primary"></i> @Model.UserName<small class="text-primary">
+                            @if (Model.IsSubscribed == false && Model.IsTrail == true)
+                            { <span>free-trail</span>}
+                            else if (Model.IsSubscribed == true)
+                            {<span> @Model.planName-plan</span> }
+                    </small>
+                </h4>
+                    @if (Model.Status == false) {
+                    <button class="btn btn-danger pull-right"><i class="fa fa-play"></i> Service Stopped</button>
+
+                    }
+                    else if (Model.Status == true)
+                    {
+                    <button class="btn btn-success pull-right"><i class="fa fa-stop"></i> Service Running <i class="fa fa-spinner fa-spin"></i></button>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+                        <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"><i class="fa fa-cog" ></i> Settings</a></li>
+                            <li class=""><a data-toggle="tab"  href="#tab-2" aria-expanded="false"><i class="fa fa-line-chart "></i> Stats</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false"><i class="fa fa-key "></i> Access</a></li>
+
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    <div class="panel panel-filled">
+                                        <div class="panel-heading">
+                                            <div class="panel-tools">
+                                                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            </div>
+                                            <h5><strong>Tags </strong> <small> These are the keywords used to look for media to interact with</small></h5>
+                                        </div>
+                                            <div class="panel-body">
+
+
+                                                <div class="col-lg-12">
+                                                    <div id="TagList">
+
+                                                    </div>
+                                                    <div class="input-group m-b-xs m-t-xs">
+                                                        <input class="form-control" type="text" id="addTagInput" onkeyup="PressEnterBtn(event)" placeholder="Write one Tag here">
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-w-md btn-accent" id="addTagInputBtn" type="button">Add Tag</button>
+                                                            @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="panel panel-filled panel-c-warning">
+                                                        <div class="panel-heading">
+                                                            <div class="panel-tools">
+                                                                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                                            </div>
+                                                            <i class="fa fa-language" ></i> Select allowed languages to interact with.
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <select class="select2_language form-control" data-placeholder="Select Language" onchange="SetLanguagePreferences()" multiple="multiple" style="width: 100%">
+                                                               
+                                                                @foreach (var item in ViewBag.Languages)
+                                                                    {
+                                                                        <option value="@item.Id">@item.Language</option>
+                                                                    }
+                                                                 @*<option value="Mayotte">Mayotte</option>
+                                                                <option value="Mexico" selected>Mexico</option>
+                                                                <option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+                                                                <option value="Moldova, Republic of">Moldova, Republic of</option>*@
+                                                            </select>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                  </div>
+                                    @*<input class="form-control" type="text" id="SearchUser" placeholder="Search By UserNames">*@
+                                            <!--Super Targeting-->
+                                    <div class="panel panel-filled">
+                                        <div class="panel-heading">
+                                            <div class="panel-tools">
+                                                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            </div>
+                                            <h5><strong>Super Targeting User</strong> <small>  Add any user here to interact with the people who follow them </small></h5>
+                                        </div>
+                                        <div class="panel-body">
+                                           
+
+                                            <div class="col-lg-12">
+                                                <div id="TargetUserList">
+
+                                                </div>
+                                                <div class="input-group m-b-xs m-t-xs col-lg-12">
+                                                    <input class="form-control" type="text" id="user-list" onkeyup="SearchUser(event)" placeholder="Search By UserNames">
+                                                    @*<div class="input-group-btn">
+                                                        <button class="btn btn-w-md btn-accent" type="submit">Search Users </button>
+                                      
+                                                    </div>*@
+                                                </div>
+
+                                                <div class="SuperTargetResult col-lg-12" >
+                                                    <ul class="user-list"></ul>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="input-group m-b-xs m-t-xs">
+                                                    <div class="input-group-btn">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                            <!--Blocked Tags-->
+                                    <div class="panel panel-filled">
+                                        <div class="panel-heading">
+                                            <div class="panel-tools">
+                                                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            </div>
+                                            <h5><strong>Blocked Tags </strong> <small> Any tag added here will prevent any interaction with any tweet/media containing them</small></h5>
+
+                                        </div>
+                                        <div class="panel-body">
+
+                                            <div class="col-lg-12">
+                                                <div id="blockTagList">
+
+                                                </div>
+                                                <div class="input-group m-b-xs m-t-xs">
+                                                    <input class="form-control" id="blockTagInput" type="text" onkeyup="PressEnterBtn(event)" placeholder="Write One Keyword">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-w-md btn-accent" id="blockTagInputBtn" type="button">Block Tag </button>
+                                                        @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="input-group m-b-xs m-t-xs">
+                                                    <div class="input-group-btn">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                            <!--Blocked Users-->
+                                    <div class="panel panel-filled">
+                                        <div class="panel-heading">
+                                            <div class="panel-tools">
+                                                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                                            </div>
+                                            <h5><strong>Blocked Users</strong> <small>  any users you do not want to interact with</small></h5>
+
+
+                                        </div>
+                                        <div class="panel-body">
+
+                                            <div class="col-lg-12">
+                                                <div id="blockTargetUserList">
+
+                                                </div>
+                                                <div class="input-group m-b-xs m-t-xs col-lg-12">
+                                                    <input class="form-control" type="text" id="block-user-list" onkeyup="SearchUser(event)" placeholder="Search By UserNames">
+                                                    <div class="input-group-btn">
+                                                        @*<button class="btn btn-w-md btn-accent" type="button">Search UserNames </button>*@
+                                                        @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                                                    </div>
+                                                </div>
+                                                <div class="SuperTargetResult col-lg-12">
+                                                    <ul class="block-user-list"></ul>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="input-group m-b-xs m-t-xs">
+                                                    <div class="input-group-btn">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                        </div>
+                                    </div>
+                                    <div id="tab-2" class="tab-pane">
+                                        <div class="panel-body">
+
+
+                                        </div>
+                                    </div>
+                                    <div id="tab-3" class="tab-pane">
+                                        <div class="panel-body">
+                                            @Html.Action("UserManagement", "Users", new { socialId = Model.Id })
+
+
+                                            </div>
+                                    </div>
+                                </div>
+
+
+                    </div>
+    
+    
+
+
+@section script{
+  @*<script>
+    $(document).ready(function () {
+
+        LoadTags();
+        LoadTargetuser();
+        debugger;
+
+        var selectedLanguages = '@Model.AccSettings.Language';
+        $(".select2_language").val(selectedLanguages.split(','));
+        $(".select2_language").select2();
+      })
+      var targetUserStack = [];
+      //function to load all added tags
+      function LoadTags() {
+          var SocailId = '@Model.Id';
+        $.ajax({
+            type: "POST",
+            url: '/Twitter/GetTags',
+            data: { socialId: SocailId },
+
+            success: function (response) {
+                $('#blockTagList').empty();
+                $('#TagList').empty();
+                $.each(response, function (key, item) {
+                    if (item.IsBlocked == false) {
+                        var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.TagName + '</a>' +
+                                            '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                            '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                        $('#TagList').append(element);
+                    }
+                    else if (item.IsBlocked == true) {
+                        var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.TagName + '</a>' +
+                                       '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                       '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                        $('#blockTagList').append(element);
+                    }
+                });
+                dynamicBtnBind();
+            }
+        });
+    }//function LoadTags  end
+
+    //function to load all Targetuser
+    function LoadTargetuser() {
+        var SocailId = '@Model.Id';
+        $.ajax({
+            type: "POST",
+            url: '/Twitter/GetAllTargetUsers',
+            data: { socialId: SocailId },
+
+            success: function (response) {
+                $('#blockTargetUserList').empty();
+                $('#TargetUserList').empty();
+                $.each(response, function (key, item) {
+                    if (item.IsBlocked == false) {
+                        var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.UserName + '</a>' +
+                                            '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                            '<a class="dropdown-item removeTargetUserBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a><div class="dropdown-divider"></div><a class="dropdown-item " id="' + item.Id + '">  <i class="fa fa-users" ></i>' + item.Followers + ' Followers</a></div></div>';
+                        $('#TargetUserList').append(element);
+                    }
+                    else if (item.IsBlocked == true) {
+                        var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.UserName + '</a>' +
+                                       '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                       '<a class="dropdown-item removeTargetUserBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a><div class="dropdown-divider"></div><a class="dropdown-item " id="' + item.Id + '">  <i class="fa fa-users" ></i>' + item.Followers + ' Followers</a></div></div>';
+                        $('#blockTargetUserList').append(element);
+                    }
+                });
+                dynamicBtnBind();
+            }
+        });
+    }//function LoadTargetuser end
+
+    //SetLanguagePreferences function
+    function SetLanguagePreferences() {
+        debugger;
+        var languageId = $('.select2_language').val();
+        $.ajax({
+            type: "POST",
+            url: '/Users/UpdateLanguages',
+            data: { languageIds: languageId.join(), socialId: '@Model.Id' },
+            success: function (response) {
+                // alert to the user for request send successfull
+                if (response.status == false) {
+                    toastr.error("Unable to add tag.");
+                }
+            }
+        });
+
+    }
+
+    //add tag btn click event
+    $('#addTagInputBtn').on('click', function () {
+        var Tag = $('#addTagInput').val();
+        var SocailId = '@Model.Id';
+        $.ajax({
+            type: "POST",
+            url: '/Twitter/AddBlockTags',
+            data: { tag: Tag, socialId: SocailId, IsBlocked: false },
+
+            success: function (response) {
+                // alert to the user for request send successfull
+                if (response.status == true) {
+                    $('#TagList').empty();
+                    $.each(response.tagList, function (key, item) {
+                        if (item.IsBlocked == false) {
+                            // var element = "<button class='btn btn-primary'>" + item.TagName + "</button>"
+                            var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.TagName + '</a>' +
+                                               '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                              '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                            $('#TagList').append(element);
+                        }
+                    })
+                    dynamicBtnBind();
+                    $('#addTagInput').val('');
+                    toastr.success("Successfully tag added.");
+                }
+                else {
+                    toastr.error("Unable to add tag.");
+                }
+            }
+        });
+    });
+    //block tag btn event
+    $('#blockTagInputBtn').on('click', function () {
+        var Tag = $('#blockTagInput').val();
+        var SocailId = '@Model.Id';
+        $.ajax({
+            type: "POST",
+            url: '/Twitter/AddBlockTags',
+            data: { tag: Tag, socialId: SocailId, IsBlocked: true },
+
+            success: function (response) {
+                // alert to the user for request send successfull
+                if (response.status == true) {
+                    $('#blockTagList').empty();
+                    $.each(response.tagList, function (key, item) {
+                        if (item.IsBlocked == true) {
+                            //var element = "<button class='btn btn-primary'>" + item.TagName + "</button>"
+                            var element = '<div class="btn-group"><a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + item.TagName + '</a>' +
+                                '<div class="dropdown-menu dropdown-style"><div class="dropdown-divider"></div>' +
+                                '<a class="dropdown-item removeTagBtn" id="' + item.Id + '">  <i class="fa fa-remove" ></i> Remove Tag</a></div></div>';
+                            $('#blockTagList').append(element);
+                        }
+                    })
+                    dynamicBtnBind();
+                    $('#blockTagInput').val('');
+                    toastr.success("Successfully negative tag added.");
+                }
+                else {
+                    toastr.error("Unable to add negative tag.");
+                }
+
+            }
+        });
+    });
+    //submit form when click on enter
+    function PressEnterBtn(event) {
+
+        if (event.keyCode == 13) {
+
+            $('#' + event.target.id + 'Btn').click();
+
+        }
+    }
+    //search username on the basis of user's query
+
+    function SearchUser(event) {
+        if (event.keyCode == 13) {
+
+            $.ajax({
+                type: "GET",
+                url: '/Twitter/SearchUser',
+                data: { query: event.target.value,socialId:'@Model.Id' },
+
+                success: function (response) {
+                    //$('.resetSearchDiv').remove();
+                    targetUserStack = [];
+                    var placeholder; var btn;
+                    if (event.target.id == "user-list") { placeholder = $('.user-list'); btn = "addTargetUser"; }
+                    if (event.target.id == "block-user-list") { placeholder = $('.block-user-list'); btn = "addBlockTargetUser"; }
+                    placeholder.empty();
+                    $.each(response, function (key, item) {
+                        targetUserStack.push({ UserName: item.ScreenName, UserId: item.Id, Follower: item.FollowersCount })
+                        var url = "https://www.twitter.com/" + item.ScreenName;
+                        var element = '<li class="col-lg-2"><a href="' + url + '" target="_blank"><img src="' + item.ProfileImageUrlHttps + '" class="img-circle"></a><a href="' + url + '" class="users-list-name" target="_blank"><span class="targetUserFollowers">' + item.FollowersCount + 'followers</span></a><button class="btn btn-default btn-sm ' + btn + '"  id="' + item.Id + '"><i class="fa fa-user-plus"></i> ' + item.ScreenName + '</button></li>';
+                        placeholder.append(element);
+                    });
+                    placeholder.parent().after('<div class="resetSearchDiv"><a class="resetSearch" name="' + event.target.id + '"><i class="fa fa-remove"></i> Reset Search</a></div>')
+                    dynamicBtnBind();
+                }
+            });
+        }
+    };
+
+    //adding event to dynamic remove tag btn
+    function dynamicBtnBind() {
+        //reset search btn click function
+        $('.resetSearch').on('click', function (e) {
+            debugger
+            $('.' + e.target.name).empty();
+            $('#' + e.target.name).val('');
+            $('.resetSearchDiv').remove();
+            
+        })
+        //removeTargetUserBtn
+        $('.removeTargetUserBtn').on('click', function (e) {
+            $.ajax({
+                type: "POST",
+                url: '/Twitter/RemoveTargetUser',
+                data: { TargetUserId: e.target.id },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTargetuser();
+                        toastr.success("Successfully removed tag.");
+                    }
+                    else {
+                        toastr.error("Unable to remove tag.");
+                    }
+                }
+            });
+        })  //remove tag btn  end
+
+        //remove tag btn
+        $('.removeTagBtn').on('click', function (e) {
+            $.ajax({
+                type: "POST",
+                url: '/Twitter/RemoveTag',
+                data: { tagId: e.target.id },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTags();
+                        toastr.success("Successfully removed tag.");
+                    }
+                    else {
+                        toastr.error("Unable to remove tag.");
+                    }
+                }
+            });
+        })  //remove tag btn  end
+        //add target user btn
+        $('.addTargetUser').on('click', function (e) {
+            AddBlockTargetUserCall(false, e.target.id)
+        });
+        //add block target user btn
+        $('.addBlockTargetUser').on('click', function (e) {
+            AddBlockTargetUserCall(true, e.target.id)
+        });
+
+
+        function AddBlockTargetUserCall(isBlocked, userid) {
+            var DataObject = {};
+            $.each(targetUserStack, function (key, item) {
+
+                DataObject.SocailId = '@Model.Id';
+                if (item.UserId == userid) {
+                    DataObject.UserName = item.UserName;
+                    DataObject.SMId = item.UserId;
+                    DataObject.Followers = item.Follower;
+                    DataObject.IsBlocked = isBlocked;
+                }
+            });
+            //ajax call to add target user
+            $.ajax({
+                type: "POST",
+                url: '/Twitter/AddBlockSuperTargetUser',
+                data: { user: DataObject },
+
+                success: function (response) {
+                    debugger
+                    if (response.status == true) {
+                        LoadTargetuser();
+                        $('.user-list').empty();
+                        $('.block-user-list').empty();
+                        toastr.success("Success.");
+                    }
+                    else {
+                        toastr.error("Unable to perform task, something went wrong.");
+                    }
+                }
+            });
+        }// end AddBlockTargetUserCall function
+    }//dynamicBtnBind function end
+
+    </script>*@  
+    }

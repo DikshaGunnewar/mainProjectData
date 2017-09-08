@@ -1,0 +1,25 @@
+﻿@model EntitiesLayer.ViewModel.PaymentViewModel
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "PaymentSuccess";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-sm-6 col-sm-offset-2">
+            <br><br> <h2 style="color:#0fad00">Success</h2>
+            <img src="~/Images/ico_check.png" width="25%" />
+            <h3>@User.Identity.Name</h3>
+            <p style="font-size:20px;color:#5C5C5C;">
+                Thank you, your payment is successful. Successfully subscribe to @Model.planDetails.Title plan.
+                <div>@Model.Currency @Model.Amount</div>
+                <div>Transaction Id : @Model.TransactionId</div>
+
+            </p>
+            <a href='@Url.Action("Dashboard", "Users")' class="btn btn-success">Go to Dashboard</a>
+            <br><br>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,163 @@
+﻿@using Microsoft.AspNet.Identity.EntityFramework;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+   @* <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">*@
+    @Styles.Render("~/bundles/css")
+ @*   <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900' rel='stylesheet' type='text/css'>*@
+    @Styles.Render("~/bundles/themesCss")
+    <script>
+        window.paceOptions = {
+            ajax: false,
+
+            
+        };
+    </script>
+    @Scripts.Render("~/bundles/js")
+    @Scripts.Render("~/bundles/themesJs")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function LoaderOption(Display) {
+            var modal = document.getElementById('fullImageModal');
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            //var img = document.getElementById($(this).attr('id'));
+            var modalImg = document.getElementById("img01");
+            //var captionText = document.getElementById("caption");
+            $('#fullImageModal .close').hide();
+            $('#caption').hide();
+
+            // modal.style.display = "block";
+            modalImg.src = '../../Images/loader.gif';
+            $('#fullImageModal').modal(Display);
+            
+            // captionText.innerHTML = $(this).attr('alt');
+
+        }
+    </script>
+
+   
+    <script>
+        toastr.options = {
+            "debug": false,
+            "newestOnTop": false,
+            "positionClass": "toast-top-right",
+            "closeButton": true,
+            "progressBar": true
+        };
+    </script>
+    @RenderSection("script", required: false)
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Header-->
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <div id="mobile-menu">
+                        <div class="left-nav-toggle">
+                            <a href="#">
+                                <i class="stroke-hamburgermenu"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <a class="navbar-brand" href='@Url.Action("Dashboard", "Users")'>
+                        <img src="~/images/socializy-logo-black.png" />
+
+                        @*SOCIALIFY
+            <span>v.1.0</span>*@
+                    </a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <div class="left-nav-toggle">
+                        <a href="">
+                            <i class="stroke-hamburgermenu"></i>
+                        </a>
+                    </div>
+                    <form class="navbar-form navbar-left">
+                        <input type="text" class="form-control" placeholder="Search data for analysis" style="width: 175px">
+                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            @*<a href="versions.html">
+                                    Versions
+                                    <span class="label label-warning pull-right">2</span>
+                                </a>*@
+                            @Html.Partial("_LoginPartial")
+                        </li>
+                        @*<li class=" profil-link">
+                            <a href="login.html">
+                                @*<span class="profile-address">luna@company.io</span>
+                                    <img src="images/profile.jpg" class="img-circle" alt="">
+                            </a>
+                        </li>*@
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- End header-->
+        <!-- Navigation-->
+        <aside class="navigation">
+            <nav >
+                @{
+                    HttpCookie authCookie = HttpContext.Current.Request.Cookies["role"];
+                    FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+                    if (authTicket.Name == "role" && authTicket.UserData == "User") { 
+                        @Html.Action("SideMenu", "Users")        
+                    }
+                    else if(authTicket.Name == "role" && authTicket.UserData == "Admin") { 
+                        @Html.Partial("_adminSideMenu")
+
+                    }
+                }
+
+
+            </nav>
+        </aside>
+
+        <!-- Main content-->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row">
+                  
+                    <div class="col-lg-12">
+                        @RenderBody()
+                    </div>
+                </div>
+                <!-- IMage full screen Modal -->
+                <div id="fullImageModal" class="modal modalf">
+
+                    <!-- The Close Button -->
+                    <span class="close" onclick="document.getElementById('fullImageModal').style.display = 'none'" data-dismiss="modal" style="display:none">&times;</span>
+
+                    <!-- Modal Content (The Image) -->
+                    <img class="modal-content" id="img01">
+
+                    <!-- Modal Caption (Image Text) -->
+                    <div id="caption"></div>
+                </div>
+
+            </div>
+        </section>
+        <!-- End main content-->
+    </div>
+
+    @*<div class="container" style="min-height: 590px;">
+        @RenderBody()
+    </div>*@
+
+    <footer>
+        <div style="text-align:center;background-color:black;color:white;bottom:0;">
+            
+        </div>
+    </footer>
+    
+
+
+
+</body>
+</html>

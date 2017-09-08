@@ -1,0 +1,94 @@
+﻿@model Autopilot.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900' rel='stylesheet' type='text/css'>
+
+<style>
+    .content {
+         margin-top: 0px; 
+         margin-left: 0px; 
+    }
+</style>
+
+
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+      @Html.ValidationSummary(true)
+    <!-- Wrapper-->
+    <div id="login" class="wrapper" style="margin-top: -3%;">
+
+        <!-- Main content-->
+        <section class="content">
+
+            <div class="container-center animated slideInDown">
+
+                <div class="view-header">
+                    <div class="header-icon">
+                        <i class="pe page-header-icon pe-7s-unlock"></i>
+                    </div>
+                    <div class="header-title">
+                        <h3>Login</h3>
+                        <small>
+                            Please enter your credentials to login.
+                        </small>
+                    </div>
+                </div>
+                <div class="panel panel-filled">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <label class="control-label" for="username">Email</label>
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "example@gmail.com" })
+                            <div style="color:red">
+                                @Html.ValidationMessageFor(model => model.Email)
+                            </div>
+                            @*<input type="text" placeholder="example@gmail.com" title="Please enter you username" required="" value="" name="username" id="username" class="form-control">*@
+                            <span class="help-block small">Your unique email to application</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="password">Password</label>
+                            @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @type = "password", placeholder = "******" })
+                            <div style="color:red">
+                                @Html.ValidationMessageFor(model => model.Password)
+                            </div>
+                            @*<input type="password" title="Please enter your password" placeholder="******" required="" value="" name="password" id="password" class="form-control">*@
+                            <span class="help-block small">Your strong password</span>
+                        </div>
+                        <div class="btn-margin">
+                            <button class="btn btn-accent  col-lg-12" type="submit">Login</button>
+
+                        </div>
+
+                        <div class="form-group ">
+                            <a href="@Url.Action("ForgotPassword", "Account")">Forgot Password?</a>
+                        </div>
+                        <div class="form-group ">
+                            Don't have an account? <a href="@Url.Action("Register","Account")">Register</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End main content-->
+    </div>
+
+}
+@section script
+{
+<script>
+        $(document).ready(function () {
+
+            if ('@ViewBag.Message' != "") {
+                toastr.warning('@ViewBag.Message');
+
+            }
+        })
+</script>
+    }

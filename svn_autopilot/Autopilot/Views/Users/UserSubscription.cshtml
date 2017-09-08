@@ -1,0 +1,216 @@
+﻿@*@model EntitiesLayer.ViewModel.SubscribeViewModel*@
+@model IEnumerable<EntitiesLayer.Entities.SubscriptionsPlan>
+@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using ServiceLayer.EnumStore;
+@{
+    ViewBag.Title = "UserSubscription";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="paymentContent">
+    <h4>Plans</h4>
+
+    <div class="row">
+
+        <h5>Select your accounts</h5>
+        <div class="row">
+            @if (ViewBag.accounts.Count > 0)
+            {
+                foreach (var item in ViewBag.accounts)
+                {
+                    <div class="col-lg-2">
+                        <div class="panel panel panel-filled panel-b-accent ">
+                            <div class="panel-body">
+                                <div class="img-rounded image-lg" style="top:5px">
+
+                                    @if (@item.ProfilepicUrl == null)
+                                    {
+                                        item.ProfilepicUrl = "../Images/imagesplaceholder.jpeg";
+                                    }
+                                    <img src="@item.ProfilepicUrl" class="img-circle" style="height:45px" />
+                                </div>
+                                <div class="m-b-none">
+                                    <h6>@item.UserName</h6>
+
+                                    @if (item.Provider == SocialMediaProviders.Twitter.ToString())
+                                    {
+                                        <span><i class="fa fa-twitter fa-2x"></i></span>
+                                    }
+                                    else if (item.Provider == SocialMediaProviders.Pinterest.ToString())
+                                    {
+                                        <span><i class="fa fa-pinterest fa-2x"></i></span>
+                                    }
+                                    else if (item.Provider == SocialMediaProviders.LinkedIn.ToString())
+                                    {
+                                        <span><i class="fa fa-linkedin fa-2x"></i></span>
+                                    }
+                                    else if (item.Provider == SocialMediaProviders.Instagram.ToString())
+                                    {
+                                        <span><i class="fa fa-instagram fa-2x"></i></span>
+                                    }
+                                    else if (item.Provider == SocialMediaProviders.Spotify.ToString())
+                                    {
+                                        <span><i class="fa fa-spotify fa-2x"></i></span>
+                                    }
+                                    <span class="pull-right"><input class="accountCheckbox" type="checkbox" value="@item.Id"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+    </div>
+    <div class="panel panel-filled col-sm-12">
+
+        @if (@Model.Count() > 0)
+        {
+            foreach (var item in Model)
+            {
+
+
+                <div class="panel panel-filled col-sm-6">
+                    <div class="panel-heading">
+                        <div class="panel-heading accountbox">
+                            @item.Title
+                            <span class="pull-right"> <label class="num"> 0 </label>  Account(s) </span>
+                        </div>
+
+
+
+                        @Html.Hidden("hdPrice", @item.Price)
+                        <h2 class="text-center text-accent"><b>@Html.Label("0", new { id = "NPrice" })</b></h2>
+
+                        @*<b>@Html.Label("0", new { id = "NPrice" })</b></h2>*@
+
+                        <div class="small text-center text-accent">Per Month </div>
+                        <div>
+                            <div class="panel-body">
+                                <div class="row clearfix">
+                                    <div class="col-lg-1 " style="width:45px">
+                                        @*<img src="@Model.ProfilepicUrl" style="width:45px" class="img-circle" />*@
+                                    </div>
+                                    <div class="col-lg-11 pull-right">
+                                        <h4><i class=""></i></h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row clearfix">
+                                    <div class="nav nav-stacked plan-features"></div>
+                                    <i class="fa fa-tags feature-icon"></i>
+                                    Number of tags per service
+                                    @if (@item.LimitedTagService == false)
+                                    {
+                                        <span class="pull-right badge bg-green">Unlimited</span>
+                                    }
+                                    @if (@item.LimitedTagService == true)
+                                    {
+                                        <span class="pull-right badge bg-green">@item.TagLimit</span>
+                                    }
+                                    <hr />
+                                    <div class="nav nav-stacked plan-features"></div>
+                                    <i class="fa fa-dashboard feature-icon"></i>
+
+                                    Speed of interaction
+
+                                    @if (@item.LowSpeedOfInteraction == false)
+                                    {
+                                        <span class="pull-right badge bg-green">Full speed</span>
+                                    }
+                                    <hr />
+                                    <div class="nav nav-stacked plan-features"></div>
+                                    <i class="fa fa-minus-circle feature-icon"></i>
+                                    Negative Keywords
+
+                                    @if (@item.AllowNegativeTags == true)
+                                    {
+                                        <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+                                    }
+                                    @if (@item.AllowNegativeTags == false)
+                                    {
+                                        <span class="pull-right badge bg-green"><i class="pull-right badge text-muted"></i></span>
+                                    }
+                                    <hr />
+                                    <div class="nav nav-stacked plan-features"></div>
+                                    <i class="fa fa-users feature-icon"></i>
+                                    Super Targeting
+
+                                    @if (@item.AllowSuperTargeting == true)
+                                    {
+                                        <span class="pull-right badge bg-green"><i class="fa fa-check"></i></span>
+                                    }
+                                    @if (@item.AllowSuperTargeting == false)
+                                    {
+                                        <span class="pull-right badge bg-green"><i class="fa fa-times"></i></span>
+                                    }
+
+                                </div>
+                                <hr />
+                                <button class="btn btn-lg btn-yellow btn-block center-block subscribe" type="button" id="@item.Id"> Subscribe </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            }
+        }
+
+    </div>
+</div>
+@section script{
+
+    <script>
+        $(document).ready(function () {
+            debugger;
+            $('.subscribe').click(function () {
+                var socialIds = [];
+                $.each($(".accountCheckbox:checked"), function () {
+                    socialIds.push($(this).val());
+                });
+                if (socialIds.length == 0) {
+                    toastr.error("Please select an account.")
+                    return false;
+                } else {
+                    //LoaderOption('show');
+                    $.ajax({
+                        type: "GET",
+                        url: '/Users/PaymentPlan',
+                        data: { PlanId: $(this).attr('id'), socialIds: socialIds.join(",") },
+
+                        success: function (response) {
+                            $('#paymentContent').html(response);
+                            //LoaderOption('hide');
+                        }
+                    });
+                };
+            });
+        });
+
+
+
+        $(document).ready(function () {
+
+            $(document).on('click', '.accountCheckbox', function () {
+                $(document).find('div[class=panel-heading]').each(function () {
+                    var text = $(".num").text($(".accountCheckbox:checked").length.toString());
+                    var numCheckCount = $(".accountCheckbox:checked").length.toString();
+
+                    if ($(".accountCheckbox:checked").length.toString() == 0)
+                    { $(priceObject).parent().parent().prev('input[type=hidden]').val() }
+                    else {
+
+                        var priceObject = $(this).find('h2:first').find('label:first');
+                        var temp = parseInt(numCheckCount) * $(priceObject).parent().parent().prev('input[type=hidden]').val();
+                        $(priceObject).html(temp);
+                    }
+                });
+            });
+        });
+
+    </script>
+}

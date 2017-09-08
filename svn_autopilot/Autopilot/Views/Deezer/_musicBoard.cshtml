@@ -1,0 +1,256 @@
+﻿@model EntitiesLayer.ViewModel.SocialMediaVM
+
+<table class="table table-vertical-align-middle">
+    <thead>
+        <tr>
+
+            <th>
+                
+            </th>
+            <th>
+                Sr. No.
+            </th>
+            <th>
+                Track Name
+            </th>
+            <th>
+                Source Type
+            </th>
+            <th>
+                Source Name
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody id="suggestedTrackGrid" style="overflow-y:auto;max-height:500px">
+
+        @*@foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <div class="small"> @item.TrackName</div>
+                </td>
+                <td>
+                    <div class="small"> @item.SourceType</div>
+                </td>
+                <td>
+                    <div class="small"> @item.SourceName</div>
+                </td>
+                @*<td>
+                    @if (item.Role != "Owner")
+                    {
+                        <a title="Remove User" class="removeUserBtn"><i class="fa fa-remove" id="@item.Id"></i></a>
+                    }
+                </td>
+
+            </tr>
+
+        }*@
+
+        
+    </tbody>
+</table>
+<div class="pull-right">
+    <a class="btn btn-accent selectAllBtn" name="select">Select All</a>
+    <a class="btn btn-accent saveTracksBtn">Save</a>
+    <a class="btn btn-accent addToPlaylistBtn">Add to playlist</a>
+    <a class="btn btn-accent" id="ignoreTrackBtn">Ignore</a>
+
+</div>
+
+<div class="modal fade" id="choosePlaylistModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h6 class="modal-title">Select Playlist</h6>
+            </div>
+            <div class="modal-body">
+               <div>
+                   <ul class="playlist-ul">
+                       <li onclick="$('#newPlaylistName').toggle();">-Create Playlist-</li>
+                       <input type="text" class="form-control" placeholder="Enter new playlist name" onkeydown="createPlaylistAndAddTrack(event)" style="display:none" id="newPlaylistName" />
+                       @foreach (var item in ViewBag.MyPlaylist)
+                       {
+                       <li class="playListBtn" onclick="AddToPlaylist('@item.id')">@item.name</li>
+                       }
+                   </ul>
+               </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+
+        LoadSuggestedTracks();
+        //select all btn
+        $('.selectAllBtn').on('click', function () {
+
+                if ($(this).text() == "Select All") {
+                    $('.selectTrackCheckBox').prop('checked', true);
+                    $(this).text("Unselect All")
+                }
+                else if ($(this).text() == "Unselect All") {
+                    $('.selectTrackCheckBox').prop('checked', false);
+                    $(this).text("Select All")
+                }
+    
+            
+
+        });
+      
+        $('.saveTracksBtn').on('click', function () {
+            var tracksIds = [];
+            $.each($(".selectTrackCheckBox:checked"), function () {
+                tracksIds.push($(this).val());
+            });
+            if (tracksIds.length != 0) {
+
+                $.ajax({
+                    type: "GET",
+                    url: '/Spotify/AddTracks',
+                    data: { socialId: '@Model.Id', trackIds: tracksIds.join(",") },
+                    success: function (response) {
+                        LoadSuggestedTracks();
+                        if (response.status == true) {
+                            toastr.success(response.message);
+                        }
+                        else {
+                            toastr.error(response.message);
+                        }
+
+                    },
+                    error: function (error) {
+                        toastr.error("something went wrong.")
+                    }
+                });
+            }
+            else {
+                toastr.error('No item is selected.');
+            }
+        });
+            
+        $('#ignoreTrackBtn').click(function () {
+            var tracksIds = [];
+            $.each($(".selectTrackCheckBox:checked"), function () {
+                tracksIds.push($(this).val());
+            });
+
+            $.ajax({
+                type: "GET",
+                url: '/Spotify/IgnoreSuggestedTracks',
+                data: { socialId: '@Model.Id', trackIds: tracksIds.join(",") },
+                success: function (response) {
+                    LoadSuggestedTracks();
+                    if (response.status == true) {
+                        toastr.success(response.message);
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                
+                },
+                error: function (error) {
+                    toastr.error("something went wrong.")
+                }
+            });
+        });
+        $('.addToPlaylistBtn').click(function () {
+            var tracksIds = [];
+            $.each($(".selectTrackCheckBox:checked"), function () {
+                tracksIds.push($(this).val());
+            });
+            if (tracksIds.length != 0) {
+                $('#choosePlaylistModal').modal('show');
+            }
+            else {
+                toastr.error('No item is selected.');
+            }
+        });
+        
+      
+
+    });// ready function ends
+
+
+    function LoadSuggestedTracks() {
+        $.ajax({
+            type: "GET",
+            url: '/Spotify/GetSuggestedTrack',
+            data: { socialId: '@Model.Id' },
+            success: function (response) {
+                $('#suggestedTrackGrid').empty();
+                $('.NoTrackText').empty();
+                if (response.length > 0) {
+
+                    $.each(response, function (key, value) {
+                        var element = '<tr><td><div class="small"> <input type="checkbox" id="' + value.Id + '" value="' + value.TrackId + '"  class="selectTrackCheckBox"/></div></td>' +
+                            '<td><div class="small"> ' + eval(key + 1) + '</div></td>' +
+                                 '<td><div class="small">  ' + value.TrackName + '</div></td>' +
+                                 '<td><div class="small">  ' + value.SourceType + '</div></td>' +
+                                 '<td><div class="small">  ' + value.SourceName + '</div></td></tr>';
+                        $('#suggestedTrackGrid').append(element);
+                    });
+                }
+                else {
+                    $('#suggestedTrackGrid').parent().after('<div class="text-center NoTrackText"><p>No tracks available</p></div>');
+
+                }
+
+
+            },
+            error: function (error) {
+                toastr.error("something went wrong.")
+            }
+        });
+    }
+    function AddToPlaylist(playlistId) {
+        var tracksIds = [];
+        $.each($(".selectTrackCheckBox:checked"), function () {
+            tracksIds.push($(this).attr('id'));
+        });
+        $.ajax({
+            type: "GET",
+            url: '/Spotify/AddToPlaylist',
+            data: { socialId: '@Model.Id', suggestedTrackIds: tracksIds.join(","), playlistId: playlistId },
+            success: function (response) {
+                LoadSuggestedTracks();
+                if (response.status == true) {
+                    toastr.success(response.message);
+                }
+                else {
+                    toastr.error(response.message);
+                }
+                $('#choosePlaylistModal').modal('hide');
+            },
+            error: function (error) {
+                toastr.error("something went wrong.")
+            }
+        });
+    }
+    function createPlaylistAndAddTrack(event) {
+        if (event.keyCode == 13) {
+
+            $.ajax({
+                type: "GET",
+                url: '/Spotify/CreatePlaylist',
+                data: { socialId: '@Model.Id', playlistName: $('#newPlaylistName').val() },
+                success: function (response) {
+                    if (response=="false") {
+                        toastr.error("Something went wrong.");
+                    }
+                    else {
+                        AddToPlaylist(response);
+                    }
+                },
+                error: function (error) {
+                    toastr.error("something went wrong.")
+                }
+            });
+
+        }
+    };
+</script>

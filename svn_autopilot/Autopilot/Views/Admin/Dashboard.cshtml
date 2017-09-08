@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel panel-filled">
+            @*<div class="panel-heading">
+                @*<div class="panel-tools">
+                    <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                </div>
+                <h4><strong><i class="fa fa-check-square-o"></i> Social Media Graph</strong></h4>
+            </div>*@
+            <div class="panel-body">
+                <div class="c-white col-sm-offset-1"><span class="label label-accent" id="visitorsCount"></span> New visitor this week</div>
+                <canvas id="sharpLineOptions" height="180"></canvas>
+
+                @*<div class="text-center slight">
+                </div>
+                <div class="flot-chart" style="height: 160px;margin-top: 5px">
+                    <div class="flot-chart-content" id="flot-line-chart"></div>
+                </div>
+                <div class="small text-center">All active users from last month.</div>
+                <span class="sparkline"></span>*@
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-filled">
+            <div class="panel-heading">
+                @*<div class="panel-tools">
+                    <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                </div>*@
+                <h4><strong><i class="fa fa-check-square-o"></i> Social Media Graph</strong></h4>
+            </div>
+            <div class="panel-body account-performance-chart">
+
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+@section script{
+
+    <script>
+        //Tag performance
+        $.ajax({
+            type: "GET",
+            url: '/Admin/GetAccountsPerformance',
+            success: function (response) {
+                $('.account-performance-chart').empty();
+                var limit = 10;
+                $.each(response, function (key, item) {
+                    if (item.count > 10) {
+                        limit = 100;
+                    }
+                });
+                $.each(response, function (key, item) {
+                    var tagPercent = (parseFloat(item.count) * 100) / limit;
+                    var width = "";
+                    var progressBar = "";
+
+                    if (tagPercent > 0) { width = 'style = "width: ' + tagPercent + '%"'; progressBar = '<div ' + width + ' aria-valuemax="' + limit + '" aria-valuemin="0" aria-valuenow="' + item.count + '" role="progressbar" class=" progress-bar progress-bar-warning"></div>'; }
+                    var element = '<p class="pull-right">' + item.count + '</p><p>' + item.label + '</p><div class="progress m-t-xs full progress-small">' + progressBar + '</div>';
+                    $('.account-performance-chart').append(element);
+                });
+            }
+        });
+
+        var globalOptions = {
+            responsive: true,
+            legend: {
+                labels: {
+                    fontColor: "#90969D"
+                },
+                position: 'bottom',
+
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontColor: "#90969D",
+                        maxRotation: 60,
+                        minRotation: 30
+                    },
+                    gridLines: {
+                        color: "#37393F"
+                    },
+
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontColor: "#90969D"
+                    },
+                    gridLines: {
+                        color: "#37393F"
+                    }
+                }]
+            }
+        };
+        $.ajax({
+            type: "GET",
+            url: '/Admin/GetLastWeekAddedUsers',
+        
+            success: function (response) {
+                var count = 0;
+                if (response.length > 0) {
+                    var label = []; var dataSet = []; 
+                    $.each(response, function (key, value) {
+                        label.push(value.label);
+                        dataSet.push(value.count);
+                        count = count + value.count;
+                    })
+                    debugger
+                    var newConversionLineData = {
+                        labels: label,
+                        datasets: [
+                            {
+                                label: "New User's Count",
+                                backgroundColor: 'rgba(246,168,33, 0.1)',
+                                borderColor: "#f6a821",
+                                pointBorderWidth: 0,
+                                pointRadius: 2,
+                                pointBorderColor: '#f6a821',
+                                borderWidth: 1,
+                                data: dataSet,
+                                lineTension: 0
+                            }
+                        ]
+                    };
+                    var c2 = document.getElementById("sharpLineOptions").getContext("2d");
+                    new Chart(c2, { type: 'line', data: newConversionLineData, options: globalOptions });
+                }
+                $('#visitorsCount').text('+'+count);
+            }
+        });
+    </script>
+}

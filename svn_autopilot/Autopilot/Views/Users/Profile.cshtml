@@ -1,0 +1,246 @@
+﻿@model EntitiesLayer.ViewModel.UserProfileVM
+@using ServiceLayer.EnumStore;
+@{
+    ViewBag.Title = "Profile";
+}
+<script>
+    var billAddressAvail = false;
+</script>
+
+<h2>Profile</h2>
+<div class="row">
+
+    @*profile*@
+    <div class="col-sm-6">
+        <div class="col-lg-12">
+            <div class="panel panel-filled  panel-c-accent-top">
+                <div class="panel-heading">
+                    Email Address 
+                    <div class="pull-right">
+                    @if (Model.EmailVerified == true)
+                    {<span class=" label label-success">verified</span> }
+                    else
+                    { <span class="label label-danger">not verified</span>}
+                    </div>
+                    
+
+                </div>
+                <div class="panel-body">
+                    <label>Email Address</label>
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "Email Address" })
+                    <button class="btn btn-accent emailUpdate">Update</button>
+                </div>
+
+            </div>
+        </div>
+
+        @*billing address*@
+        <div class="col-lg-12">
+            <div class="panel panel-filled  panel-c-accent-top">
+                <div class="panel-heading">
+                    Billing Address
+                </div>
+                <div class="panel-body">
+                    @if (Model.BillingAddress.Id != 0) { 
+                        
+                        <address>
+                            <strong>@Model.BillingAddress.Name</strong><br />
+                            <p>@Model.BillingAddress.Company</p>
+                            <p>@Model.BillingAddress.Address - @Model.BillingAddress.PostalCode</p>
+                            <p>@Model.BillingAddress.Country</p>
+                            <p>TaxId - @Model.BillingAddress.TaxId</p>
+                        </address>
+                        <div>
+                            <button class="btn btn-accent btn-xs"  onclick="editBillAddress()"><i class="fa fa-edit" ></i>Edit address</button>
+                        </div>
+                        <script>
+                            billAddressAvail = true;
+                        </script>
+                    }
+                    <div class="col-sm-12" id="billingInputFields">
+
+                          <div>
+                            <label>Name</label>
+                            @Html.TextBoxFor(model => model.BillingAddress.Name, new { @class = "form-control", placeholder = "Name" })
+                        </div>
+                        <div>
+                            <label>Company</label>
+                            @Html.TextBoxFor(model => model.BillingAddress.Company, new { @class = "form-control", placeholder = "Company" })
+                        </div>
+                        <div>
+                            <label>Address</label>
+                            @Html.TextBoxFor(model => model.BillingAddress.Address, new { @class = "form-control", placeholder = "Address" })
+                        </div>
+                        <div>
+                            <label>PostalCode</label>
+                            @Html.TextBoxFor(model => model.BillingAddress.PostalCode, new { @class = "form-control", placeholder = "PostalCode" })
+                        </div>
+                        <div>
+                            <label>Country</label>
+                            @Html.TextBoxFor(model => model.BillingAddress.Country, new { @class = "form-control", placeholder = "Country" })
+                        </div>
+                        <div>
+                            <label>TaxId</label>
+                            @Html.TextBoxFor(model => model.BillingAddress.TaxId, new { @class = "form-control", placeholder = "TaxId" })
+                        </div>
+
+                        
+                        <div class="m-t-md">
+                            <button class="btn btn-accent updateAddress">Update</button>
+                            <button class="btn btn-accent cancel" style="display:none">Cancel</button>
+
+                        </div>
+     
+                    </div>
+                       
+                    
+                    
+                    
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    @*account*@
+    <div class="col-sm-6">
+        @foreach (var item in Model.UserAccounts)
+        { <div class="col-sm-12">
+                <div class="panel  panel-b-accent user-panel">
+                 <div class="panel-heading user-heading">
+
+                                 <h3>@item.UserName</h3>
+                    
+                 </div>
+                 @if (@item.ProfilepicUrl == null)
+                 {
+                     item.ProfilepicUrl = "../Images/imagesplaceholder.jpeg";
+                 }
+                 <div class="user-image">
+                    <img src="@item.ProfilepicUrl" class="img-circle" />
+                 </div>
+                 <div class="panel-footer  user-footer">
+                     
+                     <div class="row text-center">
+                         <div class="col-sm-6">
+                             <h4>@item.Provider</h4>
+
+                             @if (item.Provider == SocialMediaProviders.Twitter.ToString())
+                             {
+                                 
+                                 <span ><i class="fa fa-twitter fa-2x"></i></span>
+                             }
+                             else if (item.Provider == SocialMediaProviders.Pinterest.ToString())
+                             {
+                                 <span ><i class="fa fa-pinterest fa-2x"></i></span>
+                             }
+                             else if (item.Provider == SocialMediaProviders.LinkedIn.ToString())
+                             {
+                                 <span ><i class="fa fa-linkedin fa-2x"></i></span>
+                             }
+                             else if (item.Provider == SocialMediaProviders.Instagram.ToString())
+                             {
+                                 <span ><i class="fa fa-instagram fa-2x"></i></span>
+                             }
+                             else if (item.Provider == SocialMediaProviders.Spotify.ToString())
+                             {
+                                 <span><i class="fa fa-spotify fa-2x"></i></span>
+                             }
+                         </div>
+                         <div class="col-sm-6">
+                            <h4>Followers</h4>
+                              <h4>@item.Followers</h4>
+                             
+
+                         </div>
+                        
+                     </div>
+
+
+
+                 </div>
+             </div>
+        </div>
+        }
+    </div>
+</div>
+@section script{
+<script>
+    $(document).ready(function () {
+        if (billAddressAvail == true) {
+            $('#billingInputFields').hide();
+        }
+        $('.cancel').on('click', function () {
+            $('#billingInputFields').hide();
+        });
+        $('.updateAddress').on('click', function () {
+            var billAddress = {};
+            billAddress.Id = '@Model.BillingAddress.Id';
+            billAddress.Name = $('#BillingAddress_Name').val();
+            billAddress.Company = $('#BillingAddress_Company').val();
+            billAddress.Address = $('#BillingAddress_Address').val();
+            billAddress.PostalCode = $('#BillingAddress_PostalCode').val();
+            billAddress.Country = $('#BillingAddress_Country').val();
+            billAddress.TaxId = $('#BillingAddress_TaxId').val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Users/UpdateBillAddress',
+                data: { billAddress: billAddress },
+                success: function (response) {
+                    if (response == true) {
+                        toastr.success("Success");
+                        location.reload();
+                    }
+                    else {
+                        toastr.error("something went wrong")
+                    }
+                }
+            });
+        });
+        //update email
+        $('.emailUpdate').click(function () {
+            $.ajax({
+                type: "GET",
+                url: '/Users/UpdateEmail',
+                data: { Email: $('#Email').val() },
+                success: function (response) {
+                    if (response.status == true) {
+                        EmailVerify();
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
+
+    })
+    function editBillAddress() {
+        $('#billingInputFields').show();
+        $('.cancel').show();
+
+    }
+
+    function EmailVerify() {
+
+            $.ajax({
+                type: "GET",
+                url: '/Account/EmailVerification',
+                
+                success: function (response) {
+                    if (response == true) {
+                        toastr.success("Successfully update your. Please verify your email from the link send to your email address.")
+                        location.reload();
+                    }
+                    else {
+                        toastr.error("something went wrong")
+                    }
+                }
+            });
+     
+    }
+
+    
+</script>
+}

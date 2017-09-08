@@ -1,0 +1,319 @@
+﻿.btn-margin {
+margin-bottom:20%;
+}
+.btn-yellow {
+    width: 100%;
+    height: auto;
+    padding: 30px 0 30px 0;
+   background-color: #f6a821;
+   color:#ffffff;
+}
+.firstrow {
+    margin: 0px 40px 40px 40px;
+}
+.user-image {
+    position: absolute;
+    top: 65px;
+    left: 50%;
+    margin-left: -25px;
+}
+    .user-image img {
+    width:45px;
+    }
+.user-heading {
+    min-height: 95px;
+}
+.user-footer {
+    background-color: #949ba2 !important;
+
+    min-height: 130px;
+}
+.user-panel {
+border-color:#949ba2 !important;
+}
+
+.btn-black {
+    color: #949ba2 !important;
+    background-color: #2e3139 !important;
+    border-color: #f8bb52 !important;
+}
+.btn-black:active:hover, .btn-black.active:hover, .open > .dropdown-toggle.btn-black:hover, .btn-black:active:focus, .btn-black.active:focus, .open > .dropdown-toggle.btn-black:focus, .btn-black:active.focus, .btn-black.active.focus, .open > .dropdown-toggle.btn-black.focus {
+    color: #ffffff;
+    background-color: rgba(246, 168, 33, 0.1);
+    border-color: #f8bb52;
+    outline: 0;
+    box-shadow: none;
+}
+
+.btn-black:hover {
+    color: #ffffff !important;
+    background-color: rgba(246, 168, 33, 0.1) !important;
+    border-color: #f6a821 !important;
+}
+
+.btn-black:focus,
+.btn-black.focus {
+    color: #ffffff;
+    background-color: rgba(246, 168, 33, 0.1);
+    border-color: #f6a821;
+    outline: 0;
+    box-shadow: none;
+}
+
+.btn-black:active,
+.btn-black.active,
+.open > .dropdown-toggle.btn-accent {
+    color: #ffffff;
+    background-color: rgba(246, 168, 33, 0.1);
+    border-color: #f6a821;
+}
+
+.btn-black:active,
+.btn-black.active,
+.open > .dropdown-toggle.btn-accent {
+    background-image: none;
+}
+.btn-black.disabled:hover,
+.btn-black[disabled]:hover,
+fieldset[disabled] .btn-accent:hover,
+.btn-black.disabled:focus,
+.btn-black[disabled]:focus,
+fieldset[disabled] .btn-black:focus,
+.btn-black.disabled.focus,
+.btn-black[disabled].focus,
+fieldset[disabled] .btn-black.focus {
+    background-color: rgba(246, 168, 33, 0.1);
+    border-color: #f6a821;
+}
+.btn-black .badge {
+    /*color: transparent;*/
+    background-color: #949ba2;
+}
+div .dropdown-menu {
+        background-color:#333 !important;
+ 
+}
+div .dropdown-menu a{
+    color:#a4aab0;
+ display:block;
+    }
+    div .dropdown-menu a:hover {
+    color:#ffffff;
+    background-color:#f6a821;
+     text-decoration: none;
+
+    }
+.SuperTargetResult .user-list>li {
+
+    float: left !important;
+    padding: 10px !important;
+    text-align: center !important;
+}
+.user-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.users-list-name {
+display:block;
+}
+.SuperTargetResult .block-user-list > li {
+
+    float: left !important;
+    padding: 10px !important;
+    text-align: center !important;
+}
+.block-user-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.SuperTargetResult .play-list > li {
+
+    float: left !important;
+    padding: 10px !important;
+    text-align: center !important;
+}
+.play-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.panel.panel-c-accent-top {
+    border-top: 3px solid #f6a821;
+}
+#recent-activity {
+max-height:500px;
+overflow-y: auto;
+}
+.social-logo:hover {
+ transform: scale(1.1);
+}
+#previewImage:hover {
+ transform: scale(1.1);
+}
+.box {
+    border-radius: 2px;
+    position: relative;
+    display: block;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    background-color: #f6a821;
+    color: #ffffff;
+        margin: 10px;
+    width: 30%;
+}
+    .box > .icon {
+        -webkit-transition: all .3s linear;
+    -o-transition: all .3s linear;
+    transition: all .3s linear;
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    z-index: 0;
+    font-size: 80px;
+    color: rgba(0,0,0,0.15);
+    }
+    .box .text-inner {
+    padding: 10px;
+    font-size: 12px;
+    }
+    .icon:hover {
+ transform: scale(1.1);
+}
+    .ld-loading div {
+    display: block;
+}
+.loader {
+    display: none;
+    position: absolute;
+    top: 45%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+} 
+
+.latestUserConversion .conversion-list >li {
+
+    float: left !important;
+    padding: 10px !important;
+    text-align: center !important;
+}
+ .conversion-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+ /* Style the Image Used to Trigger the Modal */
+#myImg {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.fullImage:hover {opacity: 0.7;}
+
+/* The Modal (background) */
+.modalf {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 50px;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+}
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+/* Add Animation - Zoom in the Modal */
+.modal-content, #caption { 
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)} 
+    to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+    from {transform:scale(0)} 
+    to {transform:scale(1)}
+}
+
+/* The Close Button */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+    .modal-content {
+        width: 100%;
+    }
+}
+.input-group input[type=text] {
+position:static;
+}
+.input-group .input-group-btn  button {
+position:static;
+}
+li.paginate_button a {
+
+    position:static;
+}
+
+.playlist-ul {
+   list-style: none;
+}
+.playlist-ul li {
+display:block   ; 
+        margin: 5px 0px 5px 0px;
+    font-size: medium;
+    }
+
+.playlist-ul li:hover {
+background-color:#2f323b;   
+    
+    }

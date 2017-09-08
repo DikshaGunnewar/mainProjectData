@@ -1,0 +1,254 @@
+﻿@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@model IEnumerable<EntitiesLayer.ViewModel.SocialMediaVM>
+@using ServiceLayer.EnumStore;
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+@if (ViewBag.EmailConfirmed == false) { 
+<div class="panel panel-b-accent EmailVerifyNotification">
+    <div class="panel-heading">
+        <div class="panel-tools">
+            <a class="panel-close"><i class="fa fa-times"></i></a>
+        </div>
+        Your Email address is not verified. <a class="btn btn-black verifyNowBtn" >Verify Now</a>
+    </div>
+
+</div>
+}
+
+
+@if (@Model.Count() > 0) {
+    foreach (var item in Model)
+        {
+            if (item.IsInvalid == true) {
+                <div class="panel panel-b-accent EmailVerifyNotification">
+                    <div class="panel-heading">
+                        <div class="panel-tools">
+                            <a class="panel-close"><i class="fa fa-times"></i></a>
+                        </div>
+                        Something went wrong with your <b>@item.Provider</b> account <b>@item.UserName</b>,may be your access is temporarily stopped. Please re-authorize your account.<a class="btn btn-black" href="@Url.Action("Reconnect", item.Provider)">Reconnect</a>
+                    </div>
+
+                </div>
+            }
+            }
+            }
+
+
+<h3>Dashboard</h3>
+<div class="row">
+@*Account tab*@
+  @if (@Model.Count() > 0) { 
+    foreach (var item in Model)
+        {
+        
+         <div class="col-lg-4">
+             <div class="panel  panel-b-accent user-panel">
+                 <div class="panel-heading user-heading">
+                                <h3>@item.UserName</h3>
+                     @if (item.Provider == SocialMediaProviders.Twitter.ToString()) { 
+                      <span class="pull-right"><i class="fa fa-twitter fa-2x"></i></span>
+                     }
+                     else if (item.Provider == SocialMediaProviders.Pinterest.ToString())
+                     {
+                         <span class="pull-right"><i class="fa fa-pinterest fa-2x"></i></span>
+                     }
+                     else if (item.Provider == SocialMediaProviders.LinkedIn.ToString())
+                     {
+                         <span class="pull-right"><i class="fa fa-linkedin fa-2x"></i></span>
+                     }  
+                     else if (item.Provider == SocialMediaProviders.Instagram.ToString())
+                     {
+                         <span class="pull-right"><i class="fa fa-instagram fa-2x"></i></span>
+                     }
+                     else if (item.Provider == SocialMediaProviders.Spotify.ToString())
+                     {
+                         <span class="pull-right"><i class="fa fa-spotify fa-2x"></i></span>
+                     }
+                 </div>
+                 @if (@item.ProfilepicUrl == null)
+                 {
+                     item.ProfilepicUrl = "../Images/imagesplaceholder.jpeg";
+                 }
+                 <div class="user-image">
+                    <img src="@item.ProfilepicUrl" class="img-circle" />
+                 </div>
+                 <div class="panel-footer  user-footer">
+                     
+                     <div class="row text-center">
+                         <div class="col-sm-4">
+                            @if (item.Status == true) {
+                                <i class="fa fa-circle text-success" ></i>
+                                <h5>Running</h5>
+                            } else {
+                            <i class="fa fa-circle text-danger" ></i>
+                                <h5>Stopped</h5>
+                            }
+                         </div>
+                         <div class="col-sm-4">
+                             <h5>@item.Followers</h5>
+                             @if (item.Provider == SocialMediaProviders.LinkedIn.ToString())
+                             {
+                                 
+                                 <h5>Connections</h5>
+                             }
+                             else { 
+                             <h5>Followers</h5>
+                             
+                             }
+
+                         </div>
+                         <div class="col-sm-4">
+                             <h5>0</h5>
+                             <h5>Conversions</h5> 
+                         </div>
+                     </div>
+
+                     <div class="row text-center">
+                         <div class="col-sm-4">
+                             <button onclick="location.href='@Url.Action("Settings",@item.Provider, new { socialId = @item.Id,tab = 1 })'" class="btn btn-black">Setting</button>
+                         </div>
+                         <div class="col-sm-4">
+                             <button onclick="location.href='@Url.Action("Settings",@item.Provider, new { socialId = @item.Id,tab = 2 })'" class="btn btn-black">Stats</button>
+                         </div>
+                         <div class="col-sm-4">
+                             <button onclick="location.href='@Url.Action("Settings",@item.Provider, new { socialId = @item.Id,tab = 3 })'" class="btn btn-black">Access</button>
+                            
+                         </div>
+                     </div>
+
+                 </div>
+             </div>
+             
+         </div>
+        }
+        
+        }          
+                      
+    <div class="col-lg-4">
+
+        <a class="btn btn-lg btn-accent btn-yellow" data-toggle="modal" data-target="#myModal">
+            <i class="fa fa-user-plus fa-lg"></i><br /> ADD ACCOUNT
+        </a>
+    </div>
+
+
+    @*@foreach (string key in session.Keys)
+    {
+        <p>Key: @key - Value: @session[key].ToString()</p>
+    }*@
+</div>
+<iframe id="hiddenLink" src="about:blank" style="display:none"></iframe>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h7 class="modal-title">Select a service</h7>
+               @* <small>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small>*@
+            </div>
+            <div class="modal-body">
+                <div class="row firstrow">
+                    <div class="col-md-4">
+                        <a onclick="logout('Twitter')" href="@Url.Action("TwitterAuth", "Twitter")"><img src="~/Images/twitter.png" class="social-logo" /></a>
+                    </div>
+                    <div class="col-md-4">
+<<<<<<< .mine
+                        @*<a href="@Url.Action("InstaAuth", "Instagram")" id="instaIcon"><img src="~/Images/insta.png" class="social-logo" /></a>*@
+                        <a href="@Url.Action("AuthCallback", "Paypal")" id="instaIcon"><img src="~/Images/insta.png" class="social-logo" /></a>
+=======
+                        <a onclick="logout('Instagram')" href="@Url.Action("InstaAuth", "Instagram")" id="instaIcon"><img src="~/Images/insta.png" class="social-logo" /></a>
+>>>>>>> .r322
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <a onclick="logout('LinkedIn')" href="@Url.Action("LinkedInAuth", "LinkedIn")" id="linkedinIcon"><img src="~/Images/linkedin.png" class="social-logo" /></a>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <a onclick="logout('Pinterest')" href="@Url.Action("PinterestAuth", "Pinterest")"><img src="~/Images/pinterest.png" class="social-logo" /></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a><img src="~/Images/soundcloud.png" class="social-logo" /></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a><img src="~/Images/dezzer.png" class="social-logo" /></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a onclick="logout('Spotify')" href="@Url.Action("SpotifyAuth", "Spotify")"><img src="~/Images/spotify.png" class="social-logo" /></a>
+                    </div>
+                </div>
+                 @*<div class="progress m-t-xs full progress-small">
+                    <div style="width: 65%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="65" role="progressbar" class=" progress-bar progress-bar-warning">
+                        <span class="sr-only">65% Complete (success)</span>
+                    </div>
+                </div>*@
+            </div>
+            @*<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-accent">Save changes</button>
+            </div>*@
+        </div>
+    </div>
+</div>
+@section script{
+
+    <script>
+        $(document).ready(function () {
+
+            if ('@ViewBag.Message' != "") {
+                toastr.warning('@ViewBag.Message');
+            }
+<<<<<<< .mine
+=======
+         
+            $('.verifyNowBtn').click(function () {
+                $.ajax({
+                    type: "GET",
+                    url: '/Account/EmailVerification',
+
+>>>>>>> .r322
+                    success: function (response) {
+                        if (response == true) {
+                            toastr.success("Please verify your email from the link send to your email address.")
+                            $('.EmailVerifyNotification').hide();
+                        }
+                        else {
+                            toastr.error("something went wrong")
+                        }
+                    }
+                });
+            });
+        })
+        function logout(provider) {
+            switch (provider) {
+                case "Instagram":
+                    $("#hiddenLink").attr("src", "http://instagram.com/accounts/logout");
+                    break;
+                case "Spotify":
+                    $("#hiddenLink").attr("src", "https://accounts.spotify.com/logout/");
+                    break;
+                case "Twitter":
+                    day = "Tuesday";
+                    break;
+                case "Pinterest": 
+                    $("#hiddenLink").attr("src", "https://in.pinterest.com/logout/");
+                    break;
+                case 4:
+                    day = "Thursday";
+                    break;
+                case 5:
+                    day = "Friday";
+                    break;
+                case 6:
+                    day = "Saturday";
+            }
+            debugger;
+            
+        }
+
+    </script>
+}

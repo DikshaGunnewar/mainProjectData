@@ -1,0 +1,54 @@
+﻿#frms {
+    margin: 0 auto;
+    width: 100%;
+    //z-index: 10;
+    background-color: white;
+    border-radius: 10px;
+    /*padding: 10px;*/
+}
+
+.navbar-header {
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+
+.navbar-brand {
+    float: none;
+}
+
+.navbar-header .navbar-brand {
+    color: #5cb85c;
+}
+
+.navbar-inverse {
+    background-color: rgba(0, 0, 0, .5);
+    border-color: rgba(0, 0, 0, .5);
+
+}
+
+h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+body {
+    /*background-image: url('../images/landing2.jpg');
+    background-repeat: no-repeat;*/
+    background-color:gray;
+}
+
+footer {
+    width: 100%;
+
+    bottom: 0px;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #5cb85c;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus{
+    border: 1px solid #5cb85c;
+    border-bottom-color: transparent;
+}

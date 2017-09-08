@@ -1,0 +1,152 @@
+﻿@model EntitiesLayer.ViewModel.SocialMediaVM
+<div id="user-management">
+    <div class="loader">
+        <div class="loader-bar"></div>
+    </div>
+    <div class="panel panel-filled">
+        <div class="panel-heading">
+            <div class="panel-tools">
+                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+            </div>
+            <h5><strong><i class="fa fa-users"></i> User Management</strong><small> Manage which users have access to your account</small></h5>
+
+        </div>
+        <div class="panel-body">
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <table class="table table-vertical-align-middle">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Role
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="userManagementGrid">
+                            @foreach (var item in Model.AccSettings.UserManagement)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="small"> @item.Email</div>
+
+                                    </td>
+                                    <td>
+                                        <div class="small"> @item.Role</div>
+                                    </td>
+                                    <td>
+                                        @if (item.Role != "Owner")
+                                        {
+                                            <a title="Remove User" class="removeUserBtn"><i class="fa fa-remove" id="@item.Id"></i></a>
+                                        }
+                                    </td>
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="input-group m-b-xs m-t-xs">
+                    <input class="form-control" type="text" id="addUserInput" placeholder="Write Email Address here">
+                    <div class="input-group-btn">
+                        <button class="btn btn-w-md btn-accent" id="addUserBtn" type="button">Add User</button>
+                        @*<button class="btn btn-default"><i class="fa fa-search"></i></button>*@
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="input-group m-b-xs m-t-xs">
+                    <div class="input-group-btn">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Delete Account-->
+    @using (Html.BeginForm("DeleteAccount", "Users", new { socialId = @Model.Id }, FormMethod.Post, null))
+        {
+    <div class="panel panel-filled">
+        <div class="panel-heading">
+            <div class="panel-tools">
+                <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+            </div>
+            <h5><strong><i class="fa fa-user-times"></i> Delete account </strong><small>Use it carefully</small></h5>
+        </div>
+        <div class="panel-body ">
+            <button class="btn btn-accent" type="submit">Delete Account</button>
+        </div>
+    </div>
+    }
+    
+</div>
+    <script>
+    if ('@ViewBag.Message' != "") {
+        toastr.warning('@ViewBag.Message');
+
+        }
+        //enter press add user
+        $('#addUserInput').on('keyup', function (event) {
+            if (event.keyCode == 13) {
+                $('#addUserBtn').click();
+            }
+        });
+
+
+
+        //remove user
+        $('.removeUserBtn').on('click', function (e) {
+            //$('#user-management').toggleClass('ld-loading');
+            LoaderOption('show');
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: '/Users/RemoveUser',
+                data: { userManagementId: e.target.id, socialId: '@Model.Id' },
+
+                success: function (response) {
+                    $('#user-management').html(response);
+                    //$('#user-management').toggleClass('ld-loading');
+                    LoaderOption('hide');
+                }
+            });
+        });
+
+        //add user
+        $('#addUserBtn').on('click', function () {
+
+                if ($('#addUserInput').val() == "") {
+                    toastr.error("Please enter an email");
+                    return false;
+                }
+                //$('#user-management').toggleClass('ld-loading');
+                LoaderOption('show');
+
+                //ajax call to add target user
+                $.ajax({
+                    type: "POST",
+                    url: '/Users/AddUserInAccount',
+                    data: { socialId: '@Model.Id',email:$('#addUserInput').val()},
+
+            success: function (response) {
+                $('#user-management').html(response);
+                //$('#user-management').toggleClass('ld-loading');
+                LoaderOption('hide');
+
+            }
+        });
+
+    });
+    </script>

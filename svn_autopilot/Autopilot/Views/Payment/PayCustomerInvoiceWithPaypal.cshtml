@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "PayCustomerInvoiceWithPaypal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section script{
+<script>
+
+    $(document).ready(function () {
+        //MakePayment();
+    });
+
+    function MakePayment() {
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: '/Payment/PayCustomerInvoiceWithPaypal',
+            data: { total: '100', Description: 'aa', OrganizationID: 1, InvoiceId: 11, ContactID: 1, PaymentGatwayTypeId: 1 },
+            success: function (response) {
+                // alert to the user for request send successfull
+                if (response.status == false) {
+                    toastr.error("Unable to add tag.");
+                }
+
+                if (response.IsSuccess == true) {
+                    if (response.Content.PaymentStatus == "Checkout") {
+                        $window.location = results.Content.paypalRedirectUrl;
+                    }
+                    else {
+                        toaster.success({ title: "Message", body: " Invoice paid succesfully" });
+
+                        // $window.location = "#" + $location.url().replace("PayInvoicePaypal", "PayInvoicePreview");
+                    }
+                }
+            }
+        });
+
+    }
+
+   
+
+    //$(document).ready(function () {
+    //    debugger;
+
+    //    function MakePayment() {
+    //    //$scope.MakePayment = function () {
+    //        debugger
+    //        var response = PayCustomerInvoiceWithPaypal(PaymentDetails).success(function (results) {
+
+    //            if (results.IsSuccess == true) {
+    //                if (results.Content.PaymentStatus == "Checkout") {
+    //                    $window.location = results.Content.paypalRedirectUrl;
+    //                }
+    //                else {
+    //                    toaster.success({ title: "Message", body: " Invoice paid succesfully" });
+
+    //                   // $window.location = "#" + $location.url().replace("PayInvoicePaypal", "PayInvoicePreview");
+    //                }
+    //            }
+    //            else {
+    //                toaster.error("Message", "Error while Processing data");
+
+
+    //            }
+
+    //        }).error(function (error) {
+
+    //        });
+
+    //    }
+    //});
+    </script>
+    }

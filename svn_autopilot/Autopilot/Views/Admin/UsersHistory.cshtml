@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Autopilot.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "UsersHistory";
+}
+
+<h2>Users History</h2>
+
+
+<table id="UserTable" class="table table-responsive table-vertical-align-middle">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.BusinessCategory)
+                </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.PasswordUpdateDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegisterationDate)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.BusinessCategory)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.PasswordUpdateDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegisterationDate)
+                </td>
+                @*<td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+
+
+</table>
+@section script{
+    <script>
+        $(document).ready(function () {
+
+                $('#UserTable').DataTable({
+                    "dom": "<'row'<'col-sm-6'l><'col-sm-6'f>>t<'row'<'col-sm-6'i><'col-sm-6'p>>"
+                });
+
+            
+        })
+        </script>
+}
